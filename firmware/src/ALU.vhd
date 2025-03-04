@@ -2,9 +2,9 @@
 -- Company: 
 -- Engineer: 
 -- 
--- Create Date: 12/02/2024 10:16:22 AM
+-- Create Date: 01/03/2025 10:57:58 AM
 -- Design Name: 
--- Module Name: MUX-4 - Behavioral
+-- Module Name: ALU - Structural
 -- Project Name: 
 -- Target Devices: 
 -- Tool Versions: 
@@ -31,26 +31,16 @@ use IEEE.STD_LOGIC_1164.ALL;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity MUX_2_64bit is
-    Port ( 
-        clk             : in std_logic;
-        s0              : in std_logic;
-        a0, a1          : in std_logic_vector(31 downto 0);
-        output          : out std_logic_vector(31 downto 0)
+entity ALU is
+    Port (
+        clk     : in std_logic;
+        
     );
-end MUX_2_64bit;
+end ALU;
 
-architecture Behavioral of MUX_2_64bit is
+architecture Structural of ALU is
+
 begin
-    process(clk, s0)
-    begin
-        if rising_edge(clk) then
-            if s0 = '0' then
-                output <= a0;
-            elsif s0 = '1' then
-                output <= a1;
-            else output <= (others => '0');
-            end if;
-        end if;
-    end process;
-end Behavioral;
+
+
+end Structural;
