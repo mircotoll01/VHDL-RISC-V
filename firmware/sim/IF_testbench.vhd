@@ -2,9 +2,9 @@
 -- Company: 
 -- Engineer: 
 -- 
--- Create Date: 01/03/2025 10:59:56 AM
+-- Create Date: 03/14/2025 06:19:25 PM
 -- Design Name: 
--- Module Name: Instr_Fetch - Structural
+-- Module Name: IF_testbench - Behavioral
 -- Project Name: 
 -- Target Devices: 
 -- Tool Versions: 
@@ -31,8 +31,20 @@ use IEEE.STD_LOGIC_1164.ALL;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity Instr_Fetch is
-    Port ( 
+entity IF_testbench is
+--  Port ( );
+end IF_testbench;
+
+architecture Behavioral of IF_testbench is
+    signal clock        : std_logic := '0';
+    signal pcl          : std_logic := '0';
+    signal pc           : std_logic_vector(11 downto 0) := (others => '0');
+    signal pc_curr      : std_logic_vector(11 downto 0) := (others => '0');
+    signal pc_next      : std_logic_vector(11 downto 0) := (others => '0');
+    signal instr        : std_logic_vector(31 downto 0) := (others => '0');
+
+    component instr_fetch
+    port(
         clk         : in std_logic;
         pc_load     : in std_logic;
         pc_in       : in std_logic_vector(11 downto 0);
@@ -40,34 +52,22 @@ entity Instr_Fetch is
         curr_pc     : out std_logic_vector(11 downto 0);
         instruction : out std_logic_vector(31 downto 0)
     );
-end Instr_Fetch;
-
-architecture Structural of Instr_Fetch is
-    signal program_counter  : std_logic_vector(11 downto 0) := (others => '0');
-
-    component blk_mem_gen_0
-    Port(
-        clka        : in std_logic;
-        wea         : in std_logic;
-        addra       : in std_logic_vector(9 downto 0);
-        dina        : in std_logic_vector(31 downto 0);
-        douta       : out std_logic_vector(31 downto 0)
-    );
     end component;
 begin
-    instr_mem: blk_mem_gen_0 
-    Port map(
-        clka        => clk,
-        wea         => '0',
-        dina        => (others => '0'),
-        addra       => std_logic_vector(program_counter(11 downto 2)),
-        douta       => instruction
+    I_F: instr_fetch
+    port map(
+        clk         => clock,
+        pc_load     => pcl,
+        pc_in       => pc,
+        next_pc     => pc_next,
+        curr_pc     => pc_curr,
+        instruction => instr
     );
     
-    process (clk)
+    process
     begin
-        if rising_edge(clk) then
-            program_counter <= program_counter + 1;
-        end if;
+        clock     <= not clock;
+        wait for 10 ns;
     end process;
-end Structural;
+
+end Behavioral;
