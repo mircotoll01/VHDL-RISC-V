@@ -32,21 +32,21 @@ use IEEE.NUMERIC_STD.ALL;
 --use UNISIM.VComponents.all;
 
 entity instr_fetch is
-    Port ( 
+    port ( 
         clk         : in std_logic;
-        pc_load     : in std_logic;
+        pc_load_en  : in std_logic;
         pc_in       : in std_logic_vector(11 downto 0);
         
         next_pc     : out std_logic_vector(11 downto 0);
         curr_pc     : out std_logic_vector(11 downto 0);
-        instruction : out std_logic_vector(31 downto 0)
+        instr       : out std_logic_vector(31 downto 0)
     );
 end instr_fetch;
 
 architecture Structural of instr_fetch is
-    signal program_counter  : unsigned(11 downto 0) := (others => '0');
+    signal pc_reg  : unsigned(11 downto 0) := (others => '0');
 
-    component blk_mem_gen_0
+    component instruction_memory
     port(
         clka        : in std_logic;
         wea         : in std_logic;
@@ -56,19 +56,23 @@ architecture Structural of instr_fetch is
     );
     end component;
 begin
-    instr_mem: blk_mem_gen_0 
+    instr_mem: instruction_memory 
     port map(
         clka        => clk,
         wea         => '0',
         dina        => (others => '0'),
-        addra       => std_logic_vector(program_counter(11 downto 2)),
-        douta       => instruction
+        addra       => std_logic_vector(pc_reg(11 downto 2)),
+        douta       => instr
     );
     
     process (clk)
     begin
         if rising_edge(clk) then
-            program_counter <= program_counter + 1;
+            if pc_load_en = '1' then
+                pc_reg  <= unsigned(pc_in);
+            end if;
         end if;
     end process;
+    next_pc     <= std_logic_vector(pc_reg + 4);
+    curr_pc     <= std_logic_vector(pc_reg);
 end Structural;

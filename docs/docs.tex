@@ -1,0 +1,26 @@
+\documentclass[a4paper]{book}
+
+\input{settings/packages}
+
+\begin{document}
+\frontmatter
+\maketitle
+\tableofcontents
+\let\cleardoublepage\clearpage
+\mainmatter
+\chapter{Introduction}
+\input{chapters/intro}
+
+\chapter{Basic Instruction Fetch}
+\input{chapters/instr_fetch}
+
+\chapter{Basic Instruction Decode}
+\input{chapters/instr_decode}
+
+\chapter{Basic Instruction Execute}
+\input{chapters/instr_execute}
+
+\bibliographystyle{plain} 
+\bibliography{bibliography}
+
+\end{document}

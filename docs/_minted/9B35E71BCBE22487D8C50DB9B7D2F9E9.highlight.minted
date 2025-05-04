@@ -1,0 +1,24 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{k}{process}\PYG{p}{(}\PYG{n}{clk}\PYG{p}{)}
+\PYG{k}{begin}
+\PYG{+w}{  }\PYG{k}{if}\PYG{+w}{ }\PYG{n}{rising\PYGZus{}edge}\PYG{p}{(}\PYG{n}{clk}\PYG{p}{)}\PYG{+w}{ }\PYG{k}{then}
+\PYG{+w}{    }\PYG{k}{case}\PYG{+w}{ }\PYG{n}{instr}\PYG{p}{(}\PYG{l+m+mi}{6}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{5}\PYG{p}{)}\PYG{+w}{ }\PYG{k}{is}
+\PYG{+w}{      }\PYG{k}{when}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}00\PYGZdq{}}\PYG{+w}{ }\PYG{o}{=}\PYG{o}{\PYGZgt{}}
+\PYG{+w}{        }\PYG{k}{case}\PYG{+w}{ }\PYG{n}{instr}\PYG{p}{(}\PYG{l+m+mi}{4}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{2}\PYG{p}{)}\PYG{+w}{ }\PYG{k}{is}
+\PYG{+w}{          }\PYG{k}{when}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}000\PYGZdq{}}\PYG{+w}{  }\PYG{o}{=}\PYG{o}{\PYGZgt{}}\PYG{+w}{              }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} LOAD [I\PYGZhy{}type]}
+\PYG{+w}{            }\PYG{n}{op\PYGZus{}class\PYGZus{}reg}\PYG{+w}{    }\PYG{o}{\PYGZlt{}}\PYG{o}{=}\PYG{+w}{  }\PYG{l+s}{\PYGZdq{}00010\PYGZdq{}}\PYG{p}{;}
+\PYG{+w}{            }\PYG{n}{imm\PYGZus{}se\PYGZus{}reg}\PYG{+w}{      }\PYG{o}{\PYGZlt{}}\PYG{o}{=}\PYG{+w}{  }\PYG{n}{resize}\PYG{p}{(}\PYG{k+kt}{signed}\PYG{p}{(}\PYG{n}{instr}\PYG{p}{(}\PYG{l+m+mi}{31}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{20}\PYG{p}{)}\PYG{p}{)}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{imm\PYGZus{}se\PYGZus{}reg}\PYG{n+na}{\PYGZsq{}length}\PYG{p}{)}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Sign extension}
+\PYG{+w}{            }\PYG{n}{a\PYGZus{}sel\PYGZus{}reg}\PYG{+w}{       }\PYG{o}{\PYGZlt{}}\PYG{o}{=}\PYG{+w}{  }\PYG{l+s+sc}{\PYGZsq{}1\PYGZsq{}}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Select register as first operand}
+\PYG{+w}{            }\PYG{n}{b\PYGZus{}sel\PYGZus{}reg}\PYG{+w}{       }\PYG{o}{\PYGZlt{}}\PYG{o}{=}\PYG{+w}{  }\PYG{l+s+sc}{\PYGZsq{}0\PYGZsq{}}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Select immediate as second operand}
+\PYG{+w}{            }\PYG{n}{alu\PYGZus{}opcode\PYGZus{}reg}\PYG{+w}{  }\PYG{o}{\PYGZlt{}}\PYG{o}{=}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}000\PYGZdq{}}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Select add}
+\PYG{+w}{            }\PYG{n}{cond\PYGZus{}opcode\PYGZus{}reg}\PYG{+w}{ }\PYG{o}{\PYGZlt{}}\PYG{o}{=}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}000\PYGZdq{}}\PYG{p}{;}
+\PYG{+w}{          }\PYG{k}{when}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}100\PYGZdq{}}\PYG{+w}{  }\PYG{o}{=}\PYG{o}{\PYGZgt{}}\PYG{+w}{              }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} OP\PYGZhy{}IMM [I\PYGZhy{}type]}
+\PYG{+w}{            }\PYG{n}{op\PYGZus{}class\PYGZus{}reg}\PYG{+w}{    }\PYG{o}{\PYGZlt{}}\PYG{o}{=}\PYG{+w}{  }\PYG{l+s}{\PYGZdq{}00001\PYGZdq{}}\PYG{p}{;}
+\PYG{+w}{            }\PYG{n}{imm\PYGZus{}se\PYGZus{}reg}\PYG{+w}{      }\PYG{o}{\PYGZlt{}}\PYG{o}{=}\PYG{+w}{  }\PYG{n}{resize}\PYG{p}{(}\PYG{k+kt}{signed}\PYG{p}{(}\PYG{n}{instr}\PYG{p}{(}\PYG{l+m+mi}{31}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{20}\PYG{p}{)}\PYG{p}{)}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{imm\PYGZus{}se\PYGZus{}reg}\PYG{n+na}{\PYGZsq{}length}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{            }\PYG{n}{a\PYGZus{}sel\PYGZus{}reg}\PYG{+w}{       }\PYG{o}{\PYGZlt{}}\PYG{o}{=}\PYG{+w}{  }\PYG{l+s+sc}{\PYGZsq{}1\PYGZsq{}}\PYG{p}{;}
+\PYG{+w}{            }\PYG{n}{b\PYGZus{}sel\PYGZus{}reg}\PYG{+w}{       }\PYG{o}{\PYGZlt{}}\PYG{o}{=}\PYG{+w}{  }\PYG{l+s+sc}{\PYGZsq{}0\PYGZsq{}}\PYG{p}{;}
+\PYG{+w}{            }\PYG{n}{alu\PYGZus{}opcode\PYGZus{}reg}\PYG{+w}{  }\PYG{o}{\PYGZlt{}}\PYG{o}{=}\PYG{+w}{ }\PYG{n}{instr}\PYG{p}{(}\PYG{l+m+mi}{14}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{12}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{            }\PYG{n}{cond\PYGZus{}opcode\PYGZus{}reg}\PYG{+w}{ }\PYG{o}{\PYGZlt{}}\PYG{o}{=}\PYG{+w}{ }\PYG{n}{instr}\PYG{p}{(}\PYG{l+m+mi}{14}\PYG{+w}{ }\PYG{k}{downto}\PYG{+w}{ }\PYG{l+m+mi}{12}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{          }\PYG{k}{when}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}101\PYGZdq{}}\PYG{+w}{  }\PYG{o}{=}\PYG{o}{\PYGZgt{}}
+\PYG{+w}{            }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} etc.}
+\end{MintedVerbatim}

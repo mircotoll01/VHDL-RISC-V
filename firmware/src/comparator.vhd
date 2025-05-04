@@ -33,12 +33,12 @@ use IEEE.NUMERIC_STD.ALL;
 
 entity comparator is
     port ( 
-        clk     : in std_logic;
-        a       : in std_logic_vector(31 downto 0);
-        b       : in std_logic_vector(31 downto 0);
-        opcode  : in std_logic_vector(2 downto 0);
+        clk             : in std_logic;
+        first_operand   : in std_logic_vector(31 downto 0);
+        second_operand  : in std_logic_vector(31 downto 0);
+        cond_opcode     : in std_logic_vector(2 downto 0);
         
-        output  : out std_logic
+        output      : out std_logic
     );
 end comparator;
 
@@ -49,25 +49,25 @@ begin
     process(clk)
     begin
         if rising_edge(clk) then
-            case opcode is
+            case cond_opcode is
                 when "000"  =>          -- EQ
                     output_raw <= '0';
-                    if a = b then 
+                    if first_operand = second_operand then 
                         output_raw <= '1';
                     end if;
                 when "001"  =>          -- NEQ
                     output_raw <= '0';
-                    if not(a = b) then 
+                    if not(first_operand = second_operand) then 
                         output_raw <= '1';
                     end if;
                 when "100"  =>          -- LT lower than
                     output_raw <= '0';
-                    if a < b then 
+                    if first_operand < second_operand then 
                         output_raw <= '1';
                     end if;
                 when "101"  =>          -- GE greater or equal
                     output_raw <= '0';
-                    if a <= b then 
+                    if first_operand <= second_operand then 
                         output_raw <= '1';
                     end if;
                 when others =>

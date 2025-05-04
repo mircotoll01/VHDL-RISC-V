@@ -41,7 +41,9 @@ entity instr_exec is
         imm_se          : in std_logic_vector(31 downto 0);
         curr_pc         : in std_logic_vector(31 downto 0);
         cond_opcode     : in std_logic_vector(2 downto 0);
-        alu_opcode      : in std_logic_vector(2 downto 0);
+        funct3          : in std_logic_vector(2 downto 0);
+        funct7          : in std_logic_vector(6 downto 0);
+        op_class        : in std_logic_vector(4 downto 0);
         
         branch_cond     : out std_logic;
         alu_pre_result  : out std_logic_vector(31 downto 0);
@@ -55,60 +57,52 @@ architecture Structural of instr_exec is
 
     component ALU is
         port (
-            clk         : in std_logic;
-            a           : in std_logic_vector(31 downto 0);
-            b           : in std_logic_vector(31 downto 0);
-            opcode      : in std_logic_vector(2 downto 0);
+            clk             : in std_logic;
+            first_operand   : in std_logic_vector(31 downto 0);
+            second_operand  : in std_logic_vector(31 downto 0);
+            funct3          : in std_logic_vector(2 downto 0);
+            funct7          : in std_logic_vector(6 downto 0);
+            op_class        : in std_logic_vector(4 downto 0);
             
-            result      : out std_logic_vector(31 downto 0);
-            pre_result  : out std_logic_vector(31 downto 0)
+            alu_pre_result  : out std_logic_vector(31 downto 0);
+            alu_result      : out std_logic_vector(31 downto 0)
         );
     end component;
     
     component comparator is
         port ( 
-            clk         : in std_logic;
-            a           : in std_logic_vector(31 downto 0);
-            b           : in std_logic_vector(31 downto 0);
-            opcode      : in std_logic_vector(2 downto 0);
+            clk             : in std_logic;
+            first_operand   : in std_logic_vector(31 downto 0);
+            second_operand  : in std_logic_vector(31 downto 0);
+            cond_opcode     : in std_logic_vector(2 downto 0);
             
-            output      : out std_logic
+            output          : out std_logic
         );
     end component;
 begin
     comp : comparator 
     port map(
-        clk         => clk,
-        a           => rs1,
-        b           => rs2,
-        opcode      => cond_opcode,
-        output      => branch_cond
+        clk             => clk,
+        first_operand   => rs1,
+        second_operand  => rs2,
+        cond_opcode     => cond_opcode,
+        output          => branch_cond
     ); 
     
     alu_1 : ALU
     port map(
-        clk         => clk,
-        a           => alu_mux_a,
-        b           => alu_mux_b,
-        opcode      => alu_opcode,
-        result      => alu_result,
-        pre_result  => alu_pre_result
+        clk             => clk,
+        first_operand   => alu_mux_a,
+        second_operand  => alu_mux_b,
+        funct3          => funct3,
+        funct7          => funct7,
+        op_class        => op_class,
+        
+        alu_result      => alu_result,
+        alu_pre_result  => alu_pre_result
     );
     
-    process(clk)
-    begin
-        if rising_edge(clk) then
-            if a_sel = '1' then
-                alu_mux_a <= rs1;
-            else
-                alu_mux_a <= curr_pc;
-            end if;
-            
-            if b_sel = '1' then
-                alu_mux_b <= rs2;
-            else
-                alu_mux_b <= imm_se;
-            end if;
-        end if;
-    end process;
+    alu_mux_a   <= rs1 when a_sel = '1' else curr_pc;
+    alu_mux_b   <= rs2 when b_sel = '1' else imm_se;
+    
 end Structural;
