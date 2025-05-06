@@ -32,7 +32,6 @@ use IEEE.NUMERIC_STD.ALL;
 --use UNISIM.VComponents.all;
 
 entity ID_testbench is
---  Port ( );
 end ID_testbench;
 
 architecture Behavioral of ID_testbench is
@@ -52,13 +51,14 @@ architecture Behavioral of ID_testbench is
     signal next_pc_ze       : std_logic_vector(31 downto 0) := (others => '0');
     signal curr_pc_ze       : std_logic_vector(31 downto 0) := (others => '0');
     signal op_class         : std_logic_vector(4 downto 0) := (others => '0');
-    signal funct3       : std_logic_vector(2 downto 0) := (others => '0');
+    signal funct3           : std_logic_vector(2 downto 0) := (others => '0');
+    signal funct7           : std_logic_vector(6 downto 0) := (others => '0');
     signal a_sel            : std_logic := '0';
     signal b_sel            : std_logic := '0';
     signal cond_opcode      : std_logic_vector(2 downto 0) := (others => '0');
     signal rs1              : std_logic_vector(31 downto 0) := (others => '0');
     signal rs2              : std_logic_vector(31 downto 0) := (others => '0');
-    signal imm_se           : signed(31 downto 0) := (others => '0');
+    signal imm_se           : std_logic_vector(31 downto 0) := (others => '0');
             
     component instr_fetch
         port ( 
@@ -92,7 +92,8 @@ architecture Behavioral of ID_testbench is
             -- Decoded instruction informations
             
             op_class    : out std_logic_vector(4 downto 0);
-            funct3  : out std_logic_vector(2 downto 0);
+            funct3      : out std_logic_vector(2 downto 0);
+            funct7      : out std_logic_vector(6 downto 0);
             a_sel       : out std_logic;
             b_sel       : out std_logic;
             cond_opcode : out std_logic_vector(2 downto 0);
@@ -101,7 +102,7 @@ architecture Behavioral of ID_testbench is
             
             rs1         : out std_logic_vector(31 downto 0);
             rs2         : out std_logic_vector(31 downto 0);
-            imm_se      : out signed(31 downto 0)
+            imm_se      : out std_logic_vector(31 downto 0)
         );
     end component;
 
@@ -128,7 +129,8 @@ begin
             next_pc_ze  => next_pc_ze,
             curr_pc_ze  => curr_pc_ze,
             op_class    => op_class,
-            funct3  => funct3,
+            funct3      => funct3,
+            funct7      => funct7,
             a_sel       => a_sel,
             b_sel       => b_sel,
             cond_opcode => cond_opcode,
@@ -144,7 +146,5 @@ begin
         clk <= '1';
         wait for clk_period / 2;
     end process;
-
     pc_in       <= next_pc;
-    
 end Behavioral;

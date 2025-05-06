@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="ID_testbench_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="ID_testbench" />
+            <top_module name="glbl" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="102,145.100 ns"></ZoomStartTime>
+      <ZoomEndTime time="102,631.101 ns"></ZoomEndTime>
+      <Cursor1Time time="102,550.100 ns"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="146"></NameColumnWidth>
+      <ValueColumnWidth column_width="99"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="14" />
+   <wvobject type="logic" fp_name="/ID_testbench/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/ID_testbench/pc_in">
+      <obj_property name="ElementShortName">pc_in[11:0]</obj_property>
+      <obj_property name="ObjectShortName">pc_in[11:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/ID_testbench/next_pc_ze">
+      <obj_property name="ElementShortName">next_pc_ze[31:0]</obj_property>
+      <obj_property name="ObjectShortName">next_pc_ze[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/ID_testbench/curr_pc_ze">
+      <obj_property name="ElementShortName">curr_pc_ze[31:0]</obj_property>
+      <obj_property name="ObjectShortName">curr_pc_ze[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/ID_testbench/instr">
+      <obj_property name="ElementShortName">instr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">instr[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/ID_testbench/op_class">
+      <obj_property name="ElementShortName">op_class[4:0]</obj_property>
+      <obj_property name="ObjectShortName">op_class[4:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/ID_testbench/funct3">
+      <obj_property name="ElementShortName">funct3[2:0]</obj_property>
+      <obj_property name="ObjectShortName">funct3[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/ID_testbench/funct7">
+      <obj_property name="ElementShortName">funct7[6:0]</obj_property>
+      <obj_property name="ObjectShortName">funct7[6:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ID_testbench/a_sel">
+      <obj_property name="ElementShortName">a_sel</obj_property>
+      <obj_property name="ObjectShortName">a_sel</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ID_testbench/b_sel">
+      <obj_property name="ElementShortName">b_sel</obj_property>
+      <obj_property name="ObjectShortName">b_sel</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/ID_testbench/cond_opcode">
+      <obj_property name="ElementShortName">cond_opcode[2:0]</obj_property>
+      <obj_property name="ObjectShortName">cond_opcode[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/ID_testbench/rs1">
+      <obj_property name="ElementShortName">rs1[31:0]</obj_property>
+      <obj_property name="ObjectShortName">rs1[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/ID_testbench/rs2">
+      <obj_property name="ElementShortName">rs2[31:0]</obj_property>
+      <obj_property name="ObjectShortName">rs2[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/ID_testbench/imm_se">
+      <obj_property name="ElementShortName">imm_se[31:0]</obj_property>
+      <obj_property name="ObjectShortName">imm_se[31:0]</obj_property>
+   </wvobject>
+</wave_config>

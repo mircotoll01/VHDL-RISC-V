@@ -119,16 +119,8 @@ begin
         cond_opcode => cond_opcode,
         imm_se      => imm_se
     );
-    
-    process(clk)
-    begin
-        if rising_edge(clk) then
-            next_pc_ze_reg       <= std_logic_vector(resize(unsigned(next_pc), next_pc_ze_reg'length));
-            curr_pc_ze_reg       <= std_logic_vector(resize(unsigned(curr_pc), next_pc_ze_reg'length));
-        end if;
-    end process;
-    
+     
     rd_rs1_mux  <= instr(11 downto 7) when rd_write_en = '1' else instr(19 downto 15);
-    next_pc_ze  <= next_pc_ze_reg;
-    curr_pc_ze  <= curr_pc_ze_reg;
+    next_pc_ze  <= std_logic_vector(resize(unsigned(next_pc), next_pc_ze_reg'length));
+    curr_pc_ze  <= std_logic_vector(resize(unsigned(curr_pc), next_pc_ze_reg'length));
 end Structural;

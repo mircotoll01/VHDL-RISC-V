@@ -4,7 +4,7 @@
 \usepackage{amssymb}
 \usepackage{newtxtext}
 \usepackage{multicol}
-\usepackage{minted}
+\usepackage[newfloat]{minted}
 \usepackage{graphicx}
 \usepackage[italicdiff]{physics}
 \usepackage{float}
@@ -14,6 +14,11 @@
 \usepackage{hyperref}
 \usepackage{pgfplots}
 \usepackage{multirow}
+\usepackage{caption}
+
+\newenvironment{code}{\captionsetup{type=listing}}{}
+\SetupFloatingEnvironment{listing}{name=Source Code}
+
 \pgfplotsset{compat=1.18}
 
 \graphicspath{{images/}}

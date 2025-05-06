@@ -33,7 +33,6 @@ use IEEE.NUMERIC_STD.ALL;
 
 entity instr_exec is
     Port (
-        clk             : in std_logic;
         a_sel           : in std_logic;
         b_sel           : in std_logic;    
         rs1             : in std_logic_vector(31 downto 0);
@@ -46,8 +45,8 @@ entity instr_exec is
         op_class        : in std_logic_vector(4 downto 0);
         
         branch_cond     : out std_logic;
-        alu_pre_result  : out std_logic_vector(31 downto 0);
-        alu_result      : out std_logic_vector(31 downto 0)
+        alu_result      : out std_logic_vector(31 downto 0);
+        ls_class        : out std_logic_vector(2 downto 0)
      );
 end instr_exec;
 
@@ -57,52 +56,43 @@ architecture Structural of instr_exec is
 
     component ALU is
         port (
-            clk             : in std_logic;
             first_operand   : in std_logic_vector(31 downto 0);
             second_operand  : in std_logic_vector(31 downto 0);
             funct3          : in std_logic_vector(2 downto 0);
             funct7          : in std_logic_vector(6 downto 0);
             op_class        : in std_logic_vector(4 downto 0);
             
-            alu_pre_result  : out std_logic_vector(31 downto 0);
-            alu_result      : out std_logic_vector(31 downto 0)
-        );
+            alu_result      : out std_logic_vector(31 downto 0);
+            ls_class        : out std_logic_vector(2 downto 0));
     end component;
     
     component comparator is
         port ( 
-            clk             : in std_logic;
             first_operand   : in std_logic_vector(31 downto 0);
             second_operand  : in std_logic_vector(31 downto 0);
             cond_opcode     : in std_logic_vector(2 downto 0);
             
-            output          : out std_logic
-        );
+            branch_cond     : out std_logic);
     end component;
 begin
     comp : comparator 
     port map(
-        clk             => clk,
         first_operand   => rs1,
         second_operand  => rs2,
         cond_opcode     => cond_opcode,
-        output          => branch_cond
-    ); 
+        branch_cond     => branch_cond); 
     
     alu_1 : ALU
     port map(
-        clk             => clk,
         first_operand   => alu_mux_a,
         second_operand  => alu_mux_b,
         funct3          => funct3,
         funct7          => funct7,
         op_class        => op_class,
-        
+         
         alu_result      => alu_result,
-        alu_pre_result  => alu_pre_result
-    );
+        ls_class        => ls_class);
     
     alu_mux_a   <= rs1 when a_sel = '1' else curr_pc;
     alu_mux_b   <= rs2 when b_sel = '1' else imm_se;
-    
 end Structural;

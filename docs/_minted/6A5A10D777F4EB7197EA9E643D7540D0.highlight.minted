@@ -1,7 +1,0 @@
-\begin{MintedVerbatim}[commandchars=\\\{\}]
-  memory\PYGZus{}initialization\PYGZus{}radix=16;
-  memory\PYGZus{}initialization\PYGZus{}vector=
-  00000293,                         \PYGZpc{} addi x5, x0, 0
-  00100313,                         \PYGZpc{} addi x6, x0, 1
-  005303B3;                         \PYGZpc{} add x7, x6, x5
-\end{MintedVerbatim}

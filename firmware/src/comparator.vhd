@@ -33,48 +33,45 @@ use IEEE.NUMERIC_STD.ALL;
 
 entity comparator is
     port ( 
-        clk             : in std_logic;
         first_operand   : in std_logic_vector(31 downto 0);
         second_operand  : in std_logic_vector(31 downto 0);
         cond_opcode     : in std_logic_vector(2 downto 0);
         
-        output      : out std_logic
+        branch_cond     : out std_logic
     );
 end comparator;
 
 architecture Behavioral of comparator is
-    signal output_raw  : std_logic := '0';
-    signal output_reg  : std_logic := '0';
 begin
-    process(clk)
+    process(cond_opcode, first_operand, second_operand)
     begin
-        if rising_edge(clk) then
-            case cond_opcode is
-                when "000"  =>          -- EQ
-                    output_raw <= '0';
-                    if first_operand = second_operand then 
-                        output_raw <= '1';
-                    end if;
-                when "001"  =>          -- NEQ
-                    output_raw <= '0';
-                    if not(first_operand = second_operand) then 
-                        output_raw <= '1';
-                    end if;
-                when "100"  =>          -- LT lower than
-                    output_raw <= '0';
-                    if first_operand < second_operand then 
-                        output_raw <= '1';
-                    end if;
-                when "101"  =>          -- GE greater or equal
-                    output_raw <= '0';
-                    if first_operand <= second_operand then 
-                        output_raw <= '1';
-                    end if;
-                when others =>
-                    output_raw <= '0';
-            end case;
-            output  <= output_raw;
-        end if;
+        case cond_opcode is
+            when "000"  =>          -- EQ
+                if first_operand = second_operand then 
+                    branch_cond <= '1';
+                end if;
+            when "001"  =>          -- NEQ
+                if not(first_operand = second_operand) then 
+                    branch_cond <= '1';
+                end if;
+            when "100"  =>          -- LT lower than
+                if signed(first_operand) < signed(second_operand) then 
+                    branch_cond <= '1';
+                end if;
+            when "101"  =>          -- GE greater or equal
+                if signed(first_operand) >= signed(second_operand) then 
+                    branch_cond <= '1';
+                end if;
+            when "110"  =>          -- LT unsigned
+                if unsigned(first_operand) < unsigned(second_operand) then 
+                    branch_cond <= '1';
+                end if;
+            when "111"  =>          -- GE unsigned
+                if unsigned(first_operand) >= unsigned(second_operand) then 
+                    branch_cond <= '1';
+                end if;
+            when others =>
+                branch_cond <= '0';
+        end case;
     end process;
-    output_reg  <= output_raw;
 end Behavioral;

@@ -39,8 +39,7 @@ entity instr_fetch is
         
         next_pc     : out std_logic_vector(11 downto 0);
         curr_pc     : out std_logic_vector(11 downto 0);
-        instr       : out std_logic_vector(31 downto 0)
-    );
+        instr       : out std_logic_vector(31 downto 0));
 end instr_fetch;
 
 architecture Structural of instr_fetch is
@@ -52,8 +51,7 @@ architecture Structural of instr_fetch is
         wea         : in std_logic;
         addra       : in std_logic_vector(9 downto 0);
         dina        : in std_logic_vector(31 downto 0);
-        douta       : out std_logic_vector(31 downto 0)
-    );
+        douta       : out std_logic_vector(31 downto 0));
     end component;
 begin
     instr_mem: instruction_memory 
@@ -62,8 +60,7 @@ begin
         wea         => '0',
         dina        => (others => '0'),
         addra       => std_logic_vector(pc_reg(11 downto 2)),
-        douta       => instr
-    );
+        douta       => instr);
     
     process (clk)
     begin
