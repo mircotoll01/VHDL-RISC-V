@@ -9,8 +9,17 @@
 After an instruction is returned from the fetching stage, it must be decoded in order to select the right action that has to be performed in the next step of the datapath. The RISC-V ISA provides instructions for register to operate with other registers, constants, with the data memory or the PC itself.
 In the base ISA, there are four core instruction formats:
 \begin{itemize}
-\item \textbf{R-type}: Register to register instructions. These instructions are expected to use two registers as sorce for data to be elaborated and then store the result of the operation in a destination register. This instruction has to select the two sources as operands for the next stage to treat them as such, hence two boolean outputs \emph{a\_sel} and \emph{b\_sel} will be pulled high to indicate that the registers pointed by the values of rs1 (bits 19 down to 15) and rs2 (bits 24 down to 20) are used as operands.
-\item \textbf{I-type}: Immediate instructions. The value stored in rs1 (bits 19 to 15) and an immediate value (bits 31 to 20) make the operands of the operation to be executed. \emph{a\_sel} has to be set high while \emph{b\_sel} is set to low.
+\item \textbf{R-type}: Register to register instructions. These instructions are expected to use two registers as sorce for data to be elaborated and then store the result of the operation in a destination register. To make an example:
+\begin{minted}{gas}
+                  add x3, x2, x1        ; x3 = x2 + x1
+\end{minted}
+This instruction has to select the two sources as operands for the next stage to treat them as such, hence two boolean outputs \emph{a\_sel} and \emph{b\_sel} will be pulled high to indicate that the registers pointed by the values of rs1 (bits 19 down to 15) and rs2 (bits 24 down to 20) are used as operands.
+\item \textbf{I-type}: These ones have a constant value, i.e. an immediate, encapsulated in the code, that becomes be part of the operation. Some examples are:
+\begin{minted}{gas}
+                  addi x3, x2, 20         ; x3 = x2 + 20
+                  lw x1, 10(x3)           ; x1 = Mem[x3 + 10]
+\end{minted}
+The value stored in rs1 (in the example above, from top to bottom, x2 and x3) is encapsulated in bits 19 down to 15 and the immediate value from bit 31 to 20. \emph{a\_sel} has to be set high while \emph{b\_sel} is set to low.
 \item \textbf{S-type}: For store operations, where the content of the register rs2 is stored inside the memory address in the data memory pointed by rs1, possibly summed to an immediate value (little endian encoded, bits 31 to 25 for the 7 most significant bits and bits 11 to 7 for the least significant ones). In this case \emph{a\_sel} is set to high while \emph{b\_sel} stays low in order for the ALU to sum rs2 and the immediate value.
 \item \textbf{U-type}: Loading immediates inside a register, like for example the the LUI (Load Upper Immediate) instruction. In this case just \emph{b\_sel} is needed to be low while the value of the other output is not negligible.
 \end{itemize}
@@ -50,14 +59,17 @@ It's obvious that \emph{funct3} and \emph{funct7} do not give information about 
 \begin{figure}[h!]
   \centering
   \includegraphics[scale=0.55]{opcodes.png}
-  \caption{RISC-V base opcode map \cite{waterman2016riscv}} 
+  \caption{RISC-V base opcode map, RISC-V user-level ISA version 2.1 \cite{waterman2016riscv}} 
+  \label{fig:opcode_map}
 \end{figure}
-In a non-superscalar design that does not take into account multiplications, floating-point operations, just implementing \textbf{LOAD}, \textbf{STORE}, \textbf{BRANCH}, \textbf{JALR}, \textbf{JAL}, \textbf{OP} and \textbf{OP-IMM} is sufficient.
+
 The opcode map gives the idea that a decoder can be described with a nested case statement, with an external case structure driven by the last two bits of the opcode, from which is possible to extrapolate what are the operands to be passed to the ALU or Logic Unit, being it the PC, two registers or an immediate and a register.  
 
-\subsubsection{Classification for the Write Back}
-The last and most delicate problem that arises when decoding instructions is that they operate in different ways even if they share the same encoding type, for example, ADDI will write the result of the arithmetic operation in a destination register, while LW will have the destination register be a memory location pointed by the result of another arithmetic operation. Also, the interaction with the PC is different even between same-type instructions, hence there is the additional requirement to define in advance a classification method in advance so that the Write Back stage can select what can has to be passed to the Register File and select the next value for the Program Counter. There are three possible cases in which the Write Back accesses the register file: Jumps (since they write back the return address), Loads and arithmetic/logic operations; In addition, the PC can have a new value loaded if, during a branch intruction, the Logic Unit returns a logic high, or during a jump instruction. Otherwise, PC+4 is always returned as next value.
-The ID can encode these informations for the next stages as a 5 bit vector, with a one-hot encoding for Arithmetic-Logic Operations, Jump, Load and Store, since store operations can be added as an additional bit that can be used as a write-enable for the Data Memory.
+\subsubsection{Instruction classification}
+The last and most delicate problem that arises when decoding instructions is that they operate in different ways even if they share the same encoding type, for example, ADDI (I-type) will write the result of the arithmetic operation in a destination register, while LW (I-type) will have as destination register a memory location pointed by the result of another arithmetic operation. Also, the interaction with the PC can widely differ based off the circumstances, hence there is the additional requirement to define in advance a classification method so that the Write Back stage can select what can has to be passed to the Register File and select the next value for the Program Counter. There are three possible cases in which the Write Back accesses the register file: Jumps (since they write back the return address), Loads and arithmetic/logic operations; In addition, the PC can have a new value loaded if, during a branch intruction, the Logic Unit returns a logic high, or during a jump instruction. Otherwise, PC+4 is always returned as next value.\\
+The solution could be encoding these informations for the next stages as a 5 bit vector, with a one-hot encoding for Arithmetic-Logic Operations, Jump, Load and Store,since store operations can be added as an additional bit that can be used as a write-enable for the Data Memory.\\
+Some instructions though cannot follow this pattern, for example, \emph{Load Upper Immediate} (U-type) takes the 32 bit immediate, with the bits 31 downto 12 being the ones the user can manipulate and the remaining 11 downto 0 being filled with zeros, and loads it to a destination register; No operation other than returning a constant is being made yet it is not a load operation nor an arithmetic or logic operation. The same thing happens for AUIPC with the difference being that the resulting immediate is alse added to the PC.\\
+To solve this problem the 5 vector could instead not be one-hot encoded and possibly include these instructions that, at first glance, could actually seem like a combination of multiple types, for example, if operations are visualized as "00001" and load operations as "00010", then LUI can be encoded as "00011". This could actually be a fine solution, opcode map Figure \ref{fig:opcode_map} might tell otherwise if the purpose of this project was its expansion to include floating-point operations and multiplications, yet they could actually be encoded as simple operations, letting the ALU manage them in function of \emph{funct7} and \emph{funct3}, while system instruction can be easily encoded as instruction class "00000".
 
 \subsection{Final concept for the ID and simulation}
 The finalized concept of the Instruction decode, which follows the block diagram at Figure \ref{fig:ID_BD}, introduces the Register File and a specialized block for decoding, taking as inputs all the IF's outputs (including {pc\_out} and {next\_pc} for sign extension).

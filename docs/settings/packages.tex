@@ -15,6 +15,7 @@
 \usepackage{pgfplots}
 \usepackage{multirow}
 \usepackage{caption}
+\usepackage{subfigure}
 
 \newenvironment{code}{\captionsetup{type=listing}}{}
 \SetupFloatingEnvironment{listing}{name=Source Code}
@@ -23,6 +24,8 @@
 
 \graphicspath{{images/}}
 \setcounter{secnumdepth}{0}
+\newcommand{\srcfolder}{../firmware/src/}
+\newcommand{\simfolder}{../firmware/sim/}
 
 \titleformat{\chapter}[display]
   {\normalfont\bfseries}{}{0pt}{\Huge}

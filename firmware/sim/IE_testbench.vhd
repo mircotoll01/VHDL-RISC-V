@@ -1,35 +1,6 @@
-----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Create Date: 03/30/2025 09:39:06 AM
--- Design Name: 
--- Module Name: IE_testbench - Behavioral
--- Project Name: 
--- Target Devices: 
--- Tool Versions: 
--- Description: 
--- 
--- Dependencies: 
--- 
--- Revision:
--- Revision 0.01 - File Created
--- Additional Comments:
--- 
-----------------------------------------------------------------------------------
-
-
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
-
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx leaf cells in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
+use IEEE.NUMERIC_STD.ALL;
 
 entity IE_testbench is
 end IE_testbench;
@@ -44,8 +15,6 @@ signal instr            : std_logic_vector(31 downto 0) := (others => '0');
 signal clk              : std_logic := '0';
 signal pc_load_en       : std_logic := '1';
 
--- signals for the ID
-
 signal rd_write_en      : std_logic := '0';
 signal rd_value         : std_logic_vector(31 downto 0) := (others => '0');
 signal next_pc_ze       : std_logic_vector(31 downto 0) := (others => '0');
@@ -55,11 +24,10 @@ signal funct3           : std_logic_vector(2 downto 0) := (others => '0');
 signal a_sel            : std_logic := '0';
 signal b_sel            : std_logic := '0';
 signal cond_opcode      : std_logic_vector(2 downto 0) := (others => '0');
-signal rs1              : std_logic_vector(31 downto 0) := (others => '0');
-signal rs2              : std_logic_vector(31 downto 0) := (others => '0');
+signal rs1_value        : std_logic_vector(31 downto 0) := (others => '0');
+signal rs2_value        : std_logic_vector(31 downto 0) := (others => '0');
 signal imm_se           : std_logic_vector(31 downto 0) := (others => '0');
 
---signals for the IE
 signal funct7           : std_logic_vector(6 downto 0) := (others => '0');
 signal branch_cond      : std_logic := '0';
 signal ls_class         : std_logic_vector(2 downto 0) := (others => '0');
@@ -83,17 +51,11 @@ component instr_decode
         next_pc     : in std_logic_vector(11 downto 0);
         curr_pc     : in std_logic_vector(11 downto 0);
         
-        -- Inputs from mem writeback
-        
         rd_write_en : in std_logic;
         rd_value    : in std_logic_vector(31 downto 0);
         
-        -- sign-extended pc info
-        
         next_pc_ze  : out std_logic_vector(31 downto 0);
         curr_pc_ze  : out std_logic_vector(31 downto 0);
-        
-        -- Decoded instruction informations
         
         op_class    : out std_logic_vector(4 downto 0);
         funct3      : out std_logic_vector(2 downto 0);
@@ -102,10 +64,8 @@ component instr_decode
         b_sel       : out std_logic;
         cond_opcode : out std_logic_vector(2 downto 0);
         
-        -- Data to be elaborated
-        
-        rs1         : out std_logic_vector(31 downto 0);
-        rs2         : out std_logic_vector(31 downto 0);
+        rs1_value   : out std_logic_vector(31 downto 0);
+        rs2_value   : out std_logic_vector(31 downto 0);
         imm_se      : out std_logic_vector(31 downto 0));
 end component;
     
@@ -113,8 +73,8 @@ component instr_exec
     port(
         a_sel           : in std_logic;
         b_sel           : in std_logic;    
-        rs1             : in std_logic_vector(31 downto 0);
-        rs2             : in std_logic_vector(31 downto 0);
+        rs1_value       : in std_logic_vector(31 downto 0);
+        rs2_value       : in std_logic_vector(31 downto 0);
         imm_se          : in std_logic_vector(31 downto 0);
         curr_pc         : in std_logic_vector(31 downto 0);
         cond_opcode     : in std_logic_vector(2 downto 0);
@@ -153,15 +113,15 @@ begin
             a_sel       => a_sel,
             b_sel       => b_sel,
             cond_opcode => cond_opcode,
-            rs1         => rs1,
-            rs2         => rs2,
+            rs1_value   => rs1_value,
+            rs2_value   => rs2_value,
             imm_se      => imm_se);
     ie_inst : instr_exec
         port map(
             a_sel       => a_sel,
             b_sel       => b_sel,
-            rs1         => rs1,
-            rs2         => rs2,
+            rs1_value   => rs1_value,
+            rs2_value   => rs2_value,
             imm_se      => imm_se,
             curr_pc     => curr_pc_ze,
             cond_opcode => cond_opcode,
@@ -169,6 +129,7 @@ begin
             funct7      => funct7,
             op_class    => op_class,
             branch_cond => branch_cond,
+            alu_result  => alu_result,
             ls_class    => ls_class);
         
     process

@@ -1,44 +1,15 @@
-----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Create Date: 03/17/2025 04:21:50 PM
--- Design Name: 
--- Module Name: instr_exec - Behavioral
--- Project Name: 
--- Target Devices: 
--- Tool Versions: 
--- Description: 
--- 
--- Dependencies: 
--- 
--- Revision:
--- Revision 0.01 - File Created
--- Additional Comments:
--- 
-----------------------------------------------------------------------------------
-
-
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
-
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
 use IEEE.NUMERIC_STD.ALL;
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx leaf cells in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
 
 entity instr_exec is
     Port (
         a_sel           : in std_logic;
         b_sel           : in std_logic;    
-        rs1             : in std_logic_vector(31 downto 0);
-        rs2             : in std_logic_vector(31 downto 0);
+        rs1_value       : in std_logic_vector(31 downto 0);
+        rs2_value       : in std_logic_vector(31 downto 0);
         imm_se          : in std_logic_vector(31 downto 0);
-        curr_pc         : in std_logic_vector(31 downto 0);
+        curr_pc_ze      : in std_logic_vector(31 downto 0);
         cond_opcode     : in std_logic_vector(2 downto 0);
         funct3          : in std_logic_vector(2 downto 0);
         funct7          : in std_logic_vector(6 downto 0);
@@ -77,8 +48,8 @@ architecture Structural of instr_exec is
 begin
     comp : comparator 
     port map(
-        first_operand   => rs1,
-        second_operand  => rs2,
+        first_operand   => rs1_value,
+        second_operand  => rs2_value,
         cond_opcode     => cond_opcode,
         branch_cond     => branch_cond); 
     
@@ -93,6 +64,6 @@ begin
         alu_result      => alu_result,
         ls_class        => ls_class);
     
-    alu_mux_a   <= rs1 when a_sel = '1' else curr_pc;
-    alu_mux_b   <= rs2 when b_sel = '1' else imm_se;
+    alu_mux_a   <= rs1_value when a_sel = '1' else curr_pc_ze;
+    alu_mux_b   <= rs2_value when b_sel = '1' else imm_se;
 end Structural;

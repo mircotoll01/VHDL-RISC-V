@@ -12,12 +12,12 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0.000 ns"></ZoomStartTime>
-      <ZoomEndTime time="641.501 ns"></ZoomEndTime>
-      <Cursor1Time time="102.500 ns"></Cursor1Time>
+      <ZoomEndTime time="1,291.001 ns"></ZoomEndTime>
+      <Cursor1Time time="412.000 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="146"></NameColumnWidth>
-      <ValueColumnWidth column_width="99"></ValueColumnWidth>
+      <ValueColumnWidth column_width="91"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="15" />
    <wvobject type="logic" fp_name="/IE_testbench/clk">
@@ -78,14 +78,14 @@
       <obj_property name="ElementShortName">branch_cond</obj_property>
       <obj_property name="ObjectShortName">branch_cond</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/IE_testbench/alu_pre_result">
-      <obj_property name="ElementShortName">alu_pre_result[31:0]</obj_property>
-      <obj_property name="ObjectShortName">alu_pre_result[31:0]</obj_property>
-      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-   </wvobject>
    <wvobject type="array" fp_name="/IE_testbench/alu_result">
       <obj_property name="ElementShortName">alu_result[31:0]</obj_property>
       <obj_property name="ObjectShortName">alu_result[31:0]</obj_property>
       <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/IE_testbench/ls_class">
+      <obj_property name="ElementShortName">ls_class[2:0]</obj_property>
+      <obj_property name="ObjectShortName">ls_class[2:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
    </wvobject>
 </wave_config>

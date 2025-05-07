@@ -1,35 +1,6 @@
-----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Create Date: 01/03/2025 10:57:58 AM
--- Design Name: 
--- Module Name: ALU - Structural
--- Project Name: 
--- Target Devices: 
--- Tool Versions: 
--- Description: 
--- 
--- Dependencies: 
--- 
--- Revision:
--- Revision 0.01 - File Created
--- Additional Comments:
--- 
-----------------------------------------------------------------------------------
-
-
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
-
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
 use IEEE.NUMERIC_STD.ALL;
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx leaf cells in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
 
 entity ALU is
     Port (
@@ -83,6 +54,7 @@ begin
                     when funct7(5) = '1' else
                         std_logic_vector(signed(first_operand) + signed(second_operand));
             end case;
+            ls_class <=  (others => 'Z');
         when "00010" => -- LOAD
             case funct3 is
                 when "000" => -- LB
@@ -119,9 +91,13 @@ begin
                     alu_result <= std_logic_vector(signed(first_operand) + signed(second_operand));
                     ls_class <=  "001";
             end case;
-        when others => -- BRANCH, JUMP or undefined sequences may just lead to an addition 
-                        --  which may or may not be considered
-            alu_result <= std_logic_vector(unsigned(first_operand) + unsigned(second_operand));
+        when "00011" => --LUI
+            alu_result  <= second_operand;
+        when "01001" => --AUIPC
+            alu_result  <= std_logic_vector(signed(first_operand) + signed(second_operand)); 
+        when others => 
+            alu_result  <= (others => 'Z');
+            ls_class    <= (others => 'Z');
     end case;
 end process;
 end Behavioral;

@@ -1,35 +1,6 @@
-----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Create Date: 03/30/2025 09:39:06 AM
--- Design Name: 
--- Module Name: ID_testbench - Behavioral
--- Project Name: 
--- Target Devices: 
--- Tool Versions: 
--- Description: 
--- 
--- Dependencies: 
--- 
--- Revision:
--- Revision 0.01 - File Created
--- Additional Comments:
--- 
-----------------------------------------------------------------------------------
-
-
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
-
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
 use IEEE.NUMERIC_STD.ALL;
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx leaf cells in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
 
 entity ID_testbench is
 end ID_testbench;
@@ -56,8 +27,8 @@ architecture Behavioral of ID_testbench is
     signal a_sel            : std_logic := '0';
     signal b_sel            : std_logic := '0';
     signal cond_opcode      : std_logic_vector(2 downto 0) := (others => '0');
-    signal rs1              : std_logic_vector(31 downto 0) := (others => '0');
-    signal rs2              : std_logic_vector(31 downto 0) := (others => '0');
+    signal rs1_value        : std_logic_vector(31 downto 0) := (others => '0');
+    signal rs2_value        : std_logic_vector(31 downto 0) := (others => '0');
     signal imm_se           : std_logic_vector(31 downto 0) := (others => '0');
             
     component instr_fetch
@@ -68,8 +39,7 @@ architecture Behavioral of ID_testbench is
             
             next_pc     : out std_logic_vector(11 downto 0);
             curr_pc     : out std_logic_vector(11 downto 0);
-            instr       : out std_logic_vector(31 downto 0)
-        );
+            instr       : out std_logic_vector(31 downto 0));
     end component;
     
     component instr_decode
@@ -100,14 +70,11 @@ architecture Behavioral of ID_testbench is
             
             -- Data to be elaborated
             
-            rs1         : out std_logic_vector(31 downto 0);
-            rs2         : out std_logic_vector(31 downto 0);
-            imm_se      : out std_logic_vector(31 downto 0)
-        );
+            rs1_value   : out std_logic_vector(31 downto 0);
+            rs2_value   : out std_logic_vector(31 downto 0);
+            imm_se      : out std_logic_vector(31 downto 0));
     end component;
-
 begin
-
     if_inst : instr_fetch
         port map (
             clk         => clk,
@@ -115,9 +82,7 @@ begin
             pc_in       => pc_in,
             next_pc     => next_pc,
             curr_pc     => curr_pc,
-            instr       => instr
-        );
-        
+            instr       => instr);
     id_inst : instr_decode
         port map (
             clk         => clk,
@@ -134,11 +99,9 @@ begin
             a_sel       => a_sel,
             b_sel       => b_sel,
             cond_opcode => cond_opcode,
-            rs1         => rs1,
-            rs2         => rs2,
-            imm_se      => imm_se
-        );
-
+            rs1_value   => rs1_value,
+            rs2_value   => rs2_value,
+            imm_se      => imm_se);
     process
     begin
         clk <= '0';

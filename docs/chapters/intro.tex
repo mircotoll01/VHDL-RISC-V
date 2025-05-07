@@ -1,10 +1,10 @@
-This report will describe a basic RISC-V datapath written in VHDL, starting from a simple non-pipelined architecture just to implement more complex features and instructions with a bottom-up approach.
+This document is going to describe a basic RISC-V datapath written in VHDL, starting from a simple non-pipelined architecture just to implement more complex features and instructions with a bottom-up approach.
 When talking about RISC-V it is necessary to distinguish the two faces of the ISA:
 \begin{itemize}
     \item \emph{Unpriviledged ISA}: that defines the user-level instruction types, which mainly compose a program to be executed.
-    \item \emph{Priviledged ISA}: which extends the instruction formats (SYSTEM-type formats), defines exception management and operation modes (supervisor, hypervisor and user mode to be specific), interrupt handling and multiple other functionalities for operating system support.
+    \item \emph{Priviledged ISA}: which defines exception management and operation modes (supervisor, hypervisor and user mode), interrupt handling and multiple other functionalities for operating system support.
 \end{itemize}
-With this in mind, the natural approach to understand the whole picture is to start from the user-level definitions, i.e. the unpriviledged ISA.
+The project will focus on partially implementing the base user-level instructions, defined in the unpriviledged ISA, defining at each stage of the execution what information in an instruction are used and how they affect the state of the sequential network, helping the explanation with behavioral simulations, and building the project in a way that can be later expanded with other features.
 Thus, the first stage of this project will focus on implementing a datapath that executes some commands included in the User Instruction Set, in particular, for the first part of the project, the 32-bit Base Integer Instruction Set (RV32I).
 The report will be divided into chapters for each of the following 5 stages of the CPU:
 \begin{itemize}
@@ -14,11 +14,7 @@ The report will be divided into chapters for each of the following 5 stages of t
 \item \textbf{Data Memory}
 \item \textbf{Writeback} 
 \end{itemize}
-Each one of these stages will be simulated beforehand in order to give a basic understanding on what to expect at the end of each stage. After the basic datapath is completed, an elementary program execution will be simulated, giving then the option to go further into implementing more complex features such as pipelinization ...
- 
-floating point operations ...
-
-CORDIC algorithm and new units ...
-
-SIMD ...
-\let\cleardoublepage\clearpage
+The completion of the first rudimental architecture, able to execute one instruction per clock cycle, has to be then optimized by introducting registers between each block, and thus achieving a \emph{pipelined architecture}, adding more complexity overall yet incrementing the performance of the circuit.\\
+Once again, adding feature with a good base to start from should be easy, and the project could take another step further; One good feature is adding the capability for the processor to execute multiplications and divisions between integers, easy enough since VHDL introduces the synthetizable operators '*' and '/'.\\
+One thing that won't be easy, though, is implementing floating-point operations, since it would require the introduction to a data type that follow the IEEE 754 standard for floating point numbers. The only way to avoid the problem would be having them encoded in VHDL using the data type \textbf{real}, which is not synthetizable, although it would make a good option for HDL designs that won't go further from simulation.\\
+With this being said, the project will follow said procedure, while making available the code in Appendix A.

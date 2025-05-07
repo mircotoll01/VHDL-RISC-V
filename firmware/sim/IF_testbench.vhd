@@ -1,24 +1,3 @@
-----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Create Date: 03/14/2025 06:19:25 PM
--- Design Name: 
--- Module Name: IF_testbench - Behavioral
--- Project Name: 
--- Target Devices: 
--- Tool Versions: 
--- Description: 
--- 
--- Dependencies: 
--- 
--- Revision:
--- Revision 0.01 - File Created
--- Additional Comments:
--- 
-----------------------------------------------------------------------------------
-
-
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
@@ -44,12 +23,9 @@ architecture Behavioral of IF_testbench is
             
             next_pc     : out std_logic_vector(11 downto 0);
             curr_pc     : out std_logic_vector(11 downto 0);
-            instr       : out std_logic_vector(31 downto 0)
-        );
+            instr       : out std_logic_vector(31 downto 0));
     end component;
-    
 begin
-
     if_inst : instr_fetch
         port map (
             clk         => clk,
@@ -57,9 +33,8 @@ begin
             pc_in       => pc_in,
             next_pc     => next_pc,
             curr_pc     => curr_pc,
-            instr       => instr
-        );
-
+            instr       => instr);
+    
     process
     begin
         clk <= '0';
@@ -67,7 +42,6 @@ begin
         clk <= '1';
         wait for clk_period / 2;
     end process; 
-
-    pc_in       <= next_pc;
     
+    pc_in       <= next_pc;
 end Behavioral;

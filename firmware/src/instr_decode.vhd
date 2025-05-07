@@ -1,35 +1,6 @@
-----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Create Date: 03/17/2025 04:21:50 PM
--- Design Name: 
--- Module Name: instr_decode - Behavioral
--- Project Name: 
--- Target Devices: 
--- Tool Versions: 
--- Description: 
--- 
--- Dependencies: 
--- 
--- Revision:
--- Revision 0.01 - File Created
--- Additional Comments:
--- 
-----------------------------------------------------------------------------------
-
-
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
-
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
 use IEEE.NUMERIC_STD.ALL;
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx leaf cells in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
 
 entity instr_decode is
     Port (
@@ -59,8 +30,8 @@ entity instr_decode is
         
         -- Data to be elaborated
         
-        rs1         : out std_logic_vector(31 downto 0);
-        rs2         : out std_logic_vector(31 downto 0);
+        rs1_value   : out std_logic_vector(31 downto 0);
+        rs2_value   : out std_logic_vector(31 downto 0);
         imm_se      : out std_logic_vector(31 downto 0)
     );
 end instr_decode;
@@ -72,19 +43,17 @@ architecture Structural of instr_decode is
         
     component register_file is
     port(
-        clk     : in std_logic;
-        we      : in std_logic;
-        a       : in std_logic_vector(4 downto 0);
-        d       : in std_logic_vector(31 downto 0);
-        dpra    : in std_logic_vector(4 downto 0);
-        qspo    : out std_logic_vector(31 downto 0);
-        qdpo    : out std_logic_vector(31 downto 0) 
-    );
+        clk         : in std_logic;
+        we          : in std_logic;
+        a           : in std_logic_vector(4 downto 0);
+        d           : in std_logic_vector(31 downto 0);
+        dpra        : in std_logic_vector(4 downto 0);
+        qspo        : out std_logic_vector(31 downto 0);
+        qdpo        : out std_logic_vector(31 downto 0));
     end component;
     
     component decoder is
     port(
-        clk         : in std_logic;
         instr       : in std_logic_vector(31 downto 0);
         op_class    : out std_logic_vector(4 downto 0);
         funct3      : out std_logic_vector(2 downto 0);
@@ -92,8 +61,7 @@ architecture Structural of instr_decode is
         a_sel       : out std_logic;
         b_sel       : out std_logic;
         cond_opcode : out std_logic_vector(2 downto 0);
-        imm_se      : out std_logic_vector(31 downto 0)
-    );
+        imm_se      : out std_logic_vector(31 downto 0));
     end component;
 begin
     reg : register_file
@@ -103,13 +71,11 @@ begin
         d           => rd_value,
         a           => rd_rs1_mux,
         dpra        => instr(24 downto 20),
-        qspo        => rs1,
-        qdpo        => rs2
-    );
+        qspo        => rs1_value,
+        qdpo        => rs2_value);
     
     dec : decoder
     port map(
-        clk         => clk,
         instr       => instr,
         op_class    => op_class,
         funct3      => funct3,
@@ -117,8 +83,7 @@ begin
         a_sel       => a_sel,
         b_sel       => b_sel,
         cond_opcode => cond_opcode,
-        imm_se      => imm_se
-    );
+        imm_se      => imm_se);
      
     rd_rs1_mux  <= instr(11 downto 7) when rd_write_en = '1' else instr(19 downto 15);
     next_pc_ze  <= std_logic_vector(resize(unsigned(next_pc), next_pc_ze_reg'length));

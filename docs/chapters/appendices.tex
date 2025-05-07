@@ -1,0 +1,157 @@
+\section{Appendix A: Instruction Tables}
+
+\begin{table}[ht]
+    \begin{center}
+        \begin{tabular}{|c|c|c|c|c|}
+            \hline
+            class & funct7 & funct3 & instruction & operation \\
+            \hline
+            \multirow{10}{*}{OP} & 0000000 & 000 & ADD & addition\\
+            & 0100000 & 000 & SUB & subtraction\\
+            & 0000000 & 001 & SLL & left logic shift\\
+            & 0000000 & 010 & SLT & set if less than\\
+            & 0000000 & 011 & SLTU & set if less than unsigned\\
+            & 0000000 & 100 & XOR & bit-wise EXOR\\
+            & 0000000 & 101 & SRL & right logic shift\\
+            & 0100000 & 101 & SRA & right arithmetic shift\\
+            & 0000000 & 110 & OR & bit-wise OR\\
+            & 0000000 & 111 & AND & bit-wise AND\\
+            \hline
+            \multirow{9}{*}{OP-IMM} & - & 000 & ADDI & addition\\
+            & 0000000 & 001 & SLLI & left logic shift\\
+            & - & 010 & SLTI & set if less than\\
+            & - & 011 & SLTIU & set if less than unsigned\\
+            & - & 100 & XORI & bit-wise EXOR\\
+            & 0000000 & 101 & SRLI & right logic shift\\
+            & 0100000 & 101 & SRAI & right arithmetic shift\\
+            & - & 110 & ORI & bit-wise OR\\
+            & - & 111 & ANDI & bit-wise AND\\
+            \hline
+            \multirow{3}{*}{STORE} & - & 000 & SB & addition\\
+            & - & 001 & SH & addition\\
+            & - & 010 & SW & addition\\
+            \hline
+            \multirow{5}{*}{LOAD} & - & 000 & LB & addition\\
+            & - & 001 & LH & additionn\\
+            & - & 010 & LW & addition\\
+            & - & 100 & LBU & unsigned addition\\
+            & - & 101 & LHU & unsigned addition\\
+            \hline
+            JALR & - & 000 & JALR & addition\\
+            \hline
+            JAL & - & - & JAL & addition\\
+            \hline
+            LUI & - & - & LUI (pseudo instruction LI) & addition with x0\\
+            \hline
+            AUIPC & - & - & AUIPC & addition\\
+            \hline
+            \multirow{6}{*}{BRANCH} & - & 000 & BEQ & branch if equal\\
+            & - & 001 & BNE & branch if not equal\\
+            & - & 100 & BLT & branch if lower than\\
+            & - & 101 & BGE & branch if greater or equal\\
+            & - & 110 & BLTU & branch if lower than unsigned\\
+            & - & 111 & BGEU & branch if greater or equal unsigned\\
+            \hline
+        \end{tabular}
+        \caption{RV32I core instructions}
+        \label{table:core_instr}
+    \end{center}
+\end{table}
+
+\section{Appendix B: Code segments}
+
+\subsection{Instruction Fetch [RV32I]}
+
+\subsubsection{Base architecture}
+\begin{code}
+\captionof{listing}{Architecure of the Instruction Fetch}
+\label{code:IF_code}   
+\inputminted[fontsize=\footnotesize]{vhdl}{\srcfolder instr_fetch.vhd}
+\end{code}
+\newpage
+
+
+\subsubsection{Testbench}
+\begin{code}
+\captionof{listing}{first Instruction Fetch testbench}
+\label{code:IF_TB}
+\inputminted[fontsize=\footnotesize]{vhdl}{\simfolder IF_testbench.vhd}
+\end{code}
+\newpage
+
+
+\subsubsection{Decoder}
+\begin{code}
+\captionof{listing}{Decoder fully implementing RV32I instructions}
+\label{code:ID_decoder}  
+\inputminted[fontsize=\footnotesize]{vhdl}{\srcfolder decoder.vhd}
+\end{code}
+
+
+\subsubsection{Testbench}
+\begin{code}
+\captionof{listing}{Instruction Decode Testbench}
+\label{code:ID_TB}  
+\inputminted[fontsize=\footnotesize]{vhdl}{\simfolder ID_testbench.vhd}
+\end{code}
+\newpage
+
+
+\subsection{Instruction Execute [RV32I]}
+\subsubsection{Architecture}
+\begin{code}
+\captionof{listing}{Architecture of Instruction Execute}
+\label{code:IE_code}  
+\inputminted[fontsize=\footnotesize]{vhdl}{\srcfolder instr_exec.vhd}
+\end{code}
+
+\subsubsection{ALU}
+\begin{code}
+\captionof{listing}{ALU}
+\label{code:IE_ALU}  
+\inputminted[fontsize=\footnotesize]{vhdl}{\srcfolder ALU.vhd}
+\end{code}
+\newpage
+
+
+\subsubsection{Comparator}
+\begin{code}
+\captionof{listing}{Comparator}
+\label{code:IE_comparator}  
+\inputminted[fontsize=\footnotesize]{vhdl}{\srcfolder comparator.vhd}
+\end{code}
+\newpage
+
+
+\subsubsection{Testbench}
+\begin{code}
+\captionof{listing}{Instruction Execute Testbench}
+\label{code:IE_TB}  
+\inputminted[fontsize=\footnotesize]{vhdl}{\simfolder IE_testbench.vhd}
+\end{code}
+\newpage
+
+
+\subsection{Data Memory [RV32I]}
+\begin{code}
+\captionof{listing}{Data Memory stage}
+\label{code:DM_code}  
+\inputminted[fontsize=\footnotesize]{vhdl}{\srcfolder data_memory.vhd}
+\end{code}
+\newpage
+
+
+\subsection{WriteBack [RV32I]}
+\begin{code}
+\captionof{listing}{Write Back stage}
+\label{code:WB_code}  
+\inputminted[fontsize=\footnotesize]{vhdl}{\srcfolder write_back.vhd}
+\end{code}
+
+\subsection{Unpipelined Datapath Simulation}
+\begin{code}
+\captionof{listing}{Testbench with all components of the RV32I datapath}
+\label{code:DP_test}  
+\inputminted[fontsize=\footnotesize]{vhdl}{\simfolder WB_testbench.vhd}
+\end{code}
+\newpage
