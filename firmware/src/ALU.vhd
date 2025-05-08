@@ -10,8 +10,7 @@ entity ALU is
         funct7          : in std_logic_vector(6 downto 0);
         op_class        : in std_logic_vector(4 downto 0);
         
-        alu_result      : out std_logic_vector(31 downto 0);
-        ls_class        : out std_logic_vector(2 downto 0)
+        alu_result      : out std_logic_vector(31 downto 0)
     );
 end ALU;
 
@@ -20,7 +19,7 @@ begin
 process(op_class, funct3, funct7, first_operand, second_operand)
 begin
     case op_class is
-        when "00001" => --OP and OP-IMM
+        when "00001" => -- OP and OP-IMM
             case funct3 is
                 when "001" => -- SLL,SLLI
                     alu_result <= std_logic_vector(shift_left(unsigned(first_operand),
@@ -54,50 +53,20 @@ begin
                     when funct7(5) = '1' else
                         std_logic_vector(signed(first_operand) + signed(second_operand));
             end case;
-            ls_class <=  (others => 'Z');
         when "00010" => -- LOAD
-            case funct3 is
-                when "000" => -- LB
-                    alu_result <= std_logic_vector(signed(first_operand) + signed(second_operand));
-                    ls_class <=  "001";
-                when "001" => -- LH
-                    alu_result <= std_logic_vector(signed(first_operand) + signed(second_operand));
-                    ls_class <=  "010";
-                when "010" => -- LW
-                    alu_result <= std_logic_vector(signed(first_operand) + signed(second_operand));
-                    ls_class <=  "100";
-                when "100" => -- LBU
-                    alu_result <= std_logic_vector(unsigned(first_operand) + unsigned(second_operand));
-                    ls_class <=  "001";
-                when "101" => -- LHU
-                    alu_result <= std_logic_vector(unsigned(first_operand) + unsigned(second_operand));
-                    ls_class <=  "010";
-                when others =>
-                    alu_result <= std_logic_vector(signed(first_operand) + signed(second_operand));
-                    ls_class <=  "001";
-            end case;
+            alu_result  <= std_logic_vector(signed(first_operand) + signed(second_operand));
         when "00100" => -- STORE
-            case funct3 is
-                when "000" => -- SB
-                    alu_result <= std_logic_vector(signed(first_operand) + signed(second_operand));
-                    ls_class <=  "001";
-                when "001" => -- SH
-                    alu_result <= std_logic_vector(signed(first_operand) + signed(second_operand));
-                    ls_class <=  "010";
-                when "010" => -- SW
-                    alu_result <= std_logic_vector(signed(first_operand) + signed(second_operand));
-                    ls_class <=  "100";
-                when others =>
-                    alu_result <= std_logic_vector(signed(first_operand) + signed(second_operand));
-                    ls_class <=  "001";
-            end case;
-        when "00011" => --LUI
+            alu_result  <= std_logic_vector(signed(first_operand) + signed(second_operand));
+        when "00011" => -- LUI
             alu_result  <= second_operand;
-        when "01001" => --AUIPC
+        when "01001" => -- AUIPC
             alu_result  <= std_logic_vector(signed(first_operand) + signed(second_operand)); 
+        when "01000" => -- JUMP
+            alu_result  <= std_logic_vector(signed(first_operand) + signed(second_operand)); 
+        when "10000" => -- BRANCH
+            alu_result  <= std_logic_vector(signed(first_operand) + signed(second_operand));
         when others => 
             alu_result  <= (others => 'Z');
-            ls_class    <= (others => 'Z');
     end case;
 end process;
 end Behavioral;

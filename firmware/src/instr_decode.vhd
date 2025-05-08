@@ -38,8 +38,6 @@ end instr_decode;
 
 architecture Structural of instr_decode is
     signal rd_rs1_mux       : std_logic_vector(4 downto 0) := (others => '0');
-    signal next_pc_ze_reg   : std_logic_vector(31 downto 0) := (others => '0');
-    signal curr_pc_ze_reg   : std_logic_vector(31 downto 0) := (others => '0');
         
     component register_file is
     port(
@@ -86,6 +84,6 @@ begin
         imm_se      => imm_se);
      
     rd_rs1_mux  <= instr(11 downto 7) when rd_write_en = '1' else instr(19 downto 15);
-    next_pc_ze  <= std_logic_vector(resize(unsigned(next_pc), next_pc_ze_reg'length));
-    curr_pc_ze  <= std_logic_vector(resize(unsigned(curr_pc), next_pc_ze_reg'length));
+    next_pc_ze  <= std_logic_vector(resize(unsigned(next_pc), next_pc_ze'length));
+    curr_pc_ze  <= std_logic_vector(resize(unsigned(curr_pc), curr_pc_ze'length));
 end Structural;

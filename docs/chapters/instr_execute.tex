@@ -5,7 +5,6 @@
     \label{fig:IE_BD}
 \end{figure}
 
-\subsection{Instruction analysis and Execution}
 With the previous information extrapolated from the instruction, there is now the need to elaborate the incoming values stored in their relative registers, by performing the needed operation type.
 The Instruction Execute stage, implemented in the simplest way possible can be described in VHDL with two main blocks:
 \begin{itemize}
@@ -22,7 +21,7 @@ If the ALU can be defined as a big case statement as for the decoder, Table \ref
 \item All load and store operations require \emph{funct3} to be used later during WriteBack stage because they may operate with less than 32 bits, thus it can be useful to \emph{pass it down to the latest stages of the datapath}.
 \item Shift operations using immediates are encoded as I-type but they just need five bits indicated as \emph{shamt} (shift amount), for shifting more than 32-bits would not make any sense. While this does not affect SLLI and SRLI, the presence of \emph{funct7} rises a problem with SRAI. \emph{Shifts with immediates need to filter part of the second operand}.
 \end{enumerate}
-The code for the ALU will thus check the operation class, funct3 and funct7 in the latter sequence. Also, the block will return a new logic vector, named \emph{ls{\_}class} which, in case of L/S operations, will serve the WB stage to identify the length to which the instruction is operating, being it 8, 16 or 32 bits. Notes Code Source \ref{code:IE_ALU} shows a VHDL implementation that follows said constraints.\\
+The code for the ALU will thus check the operation class, funct3 and funct7 in the latter sequence. Source code \ref{code:IE_ALU} shows a VHDL implementation that follows said constraints.\\
 Branches only require a comparison and just need a single signal to indicate whether or not a jump can happen. From the RV32I instruction table, the remaining core instructions  to implement are indicated in Table \ref{table:core_instr} as BRANCH class instrutions. As it has been for the ALU, the table leads us to a case statement, much simpler than before due to just having to look at \emph{funct3}; A much more self-explanatory architecture can be seen in Source Code \ref{code:IE_comparator}.\\
 Finally, the IE (Shown as Source Code \ref{code:IE_code}, much easier to visualize in Figure \ref{fig:IE_BD}) can be "assembled" by routing inputs and outputs of each block, and by also coding multiplexers for the operand selection:
 
@@ -32,8 +31,7 @@ alu_mux_b   <= rs2 when b_sel = '1' else imm_se;
 \end{minted}
 
 \subsection{Simulation}
-With the current initialization files for the IM, only a small amount of instructions are going to be tested, for this reason the new file should contain each existing tipology, possibly testing the ones that use \emph{funct7} while also implementing jumps and branches, possibly with a loop so that the next stages can be easily tested for inconsistencies or error that may stop the code from running.
-The new initialization could become:
+With the current initialization files for the IM, only a small amount of instructions are going to be tested, for this reason the new file should contain each existing tipology, possibly testing the ones that use \emph{funct7} while also implementing jumps and branches, possibly with a loop so that the next stages can be easily tested for inconsistencies or error that may stop the code from running.The new initialization could become:
 
 \begin{minted}{text}
 memory_initialization_radix = 16;
@@ -53,10 +51,14 @@ Now when running a behavioral simulation of the testbench it should be expected 
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[scale=0.37]{IE_sim.png}
+    \includegraphics[scale=0.35]{IE_sim.png}
     \caption{Complete IE simulation}
     \label{fig:IE_sim}
 \end{figure}
 
-On the left it can be seen that the LUI instruction is resulting in its immediate, that is 16, shifted to the left by 11 bits, returning 65536.
+from the copy of the coefficient file given above it is possible to observe the behavior of each instruction in order: \\
+On the far left the LUI instruction is resulting in its immediate, that is 16, shifted to the left by 11 bits, returning 65536 as expected. 
+Arithmetic operations without immediate values, the ones which have operand selectors at logic high, leave high impedance signals at \emph{imm{\_}se}.
+Jump instructions are in fact able to modify the PC, in particular, JAL x0 0 is returning the exact same value of it while BEQ x1 x1 -8 is in fact returning 32-8=28 as next PC value.\\
+Lastly load and store are not yet ready to be analyzed in behavior, since there would be the need for the data memory and writeback to be further inspected.
 

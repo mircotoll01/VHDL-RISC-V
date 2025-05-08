@@ -30,7 +30,6 @@ signal imm_se           : std_logic_vector(31 downto 0) := (others => '0');
 
 signal funct7           : std_logic_vector(6 downto 0) := (others => '0');
 signal branch_cond      : std_logic := '0';
-signal ls_class         : std_logic_vector(2 downto 0) := (others => '0');
 signal alu_result       : std_logic_vector(31 downto 0) := (others => '0');
 
 component instr_fetch
@@ -76,15 +75,14 @@ component instr_exec
         rs1_value       : in std_logic_vector(31 downto 0);
         rs2_value       : in std_logic_vector(31 downto 0);
         imm_se          : in std_logic_vector(31 downto 0);
-        curr_pc         : in std_logic_vector(31 downto 0);
+        curr_pc_ze      : in std_logic_vector(31 downto 0);
         cond_opcode     : in std_logic_vector(2 downto 0);
         funct3          : in std_logic_vector(2 downto 0);
         funct7          : in std_logic_vector(6 downto 0);
         op_class        : in std_logic_vector(4 downto 0);
         
         branch_cond     : out std_logic;
-        alu_result      : out std_logic_vector(31 downto 0);
-        ls_class        : out std_logic_vector(2 downto 0));
+        alu_result      : out std_logic_vector(31 downto 0));
 end component;
 begin
 
@@ -123,14 +121,13 @@ begin
             rs1_value   => rs1_value,
             rs2_value   => rs2_value,
             imm_se      => imm_se,
-            curr_pc     => curr_pc_ze,
+            curr_pc_ze  => curr_pc_ze,
             cond_opcode => cond_opcode,
             funct3      => funct3,
             funct7      => funct7,
             op_class    => op_class,
             branch_cond => branch_cond,
-            alu_result  => alu_result,
-            ls_class    => ls_class);
+            alu_result  => alu_result);
         
     process
     begin

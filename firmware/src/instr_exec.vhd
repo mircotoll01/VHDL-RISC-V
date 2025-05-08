@@ -16,8 +16,7 @@ entity instr_exec is
         op_class        : in std_logic_vector(4 downto 0);
         
         branch_cond     : out std_logic;
-        alu_result      : out std_logic_vector(31 downto 0);
-        ls_class        : out std_logic_vector(2 downto 0)
+        alu_result      : out std_logic_vector(31 downto 0)
      );
 end instr_exec;
 
@@ -33,8 +32,7 @@ architecture Structural of instr_exec is
             funct7          : in std_logic_vector(6 downto 0);
             op_class        : in std_logic_vector(4 downto 0);
             
-            alu_result      : out std_logic_vector(31 downto 0);
-            ls_class        : out std_logic_vector(2 downto 0));
+            alu_result      : out std_logic_vector(31 downto 0));
     end component;
     
     component comparator is
@@ -61,8 +59,7 @@ begin
         funct7          => funct7,
         op_class        => op_class,
          
-        alu_result      => alu_result,
-        ls_class        => ls_class);
+        alu_result      => alu_result);
     
     alu_mux_a   <= rs1_value when a_sel = '1' else curr_pc_ze;
     alu_mux_b   <= rs2_value when b_sel = '1' else imm_se;

@@ -21,30 +21,44 @@ end write_back;
 
 architecture Behavioral of write_back is
 begin
-    process(op_class)
+    process(op_class,mem_out,branch_cond,alu_result,rs2_value,next_pc_ze)
     begin
         case op_class is
             when "00001" =>         -- OP - OP-IMM
                 rd_value    <= alu_result;
                 pc_out      <= next_pc_ze;
+                rd_write_en <= '1';
+                pc_load_en  <= '1';
             when "00011" =>         -- LUI
                 rd_value    <= alu_result;
                 pc_out      <= next_pc_ze;
-            when "00100" =>         -- LOAD
+                rd_write_en <= '1';
+                pc_load_en  <= '1';
+            when "00010" =>         -- LOAD
                 rd_value    <= mem_out;
                 pc_out      <= next_pc_ze;
+                rd_write_en <= '1';
+                pc_load_en  <= '1';
             when "01000" =>         -- JUMP
                 rd_value    <= next_pc_ze;
-                pc_out      <= alu_result;
+                pc_out      <= std_logic_vector(signed(alu_result));
+                rd_write_en <= '1';
+                pc_load_en  <= '1';
             when "10000" =>         -- BRANCH
                 rd_value    <= next_pc_ze when branch_cond = '1' else (others => 'Z');
                 pc_out      <= alu_result when branch_cond = '1' else next_pc_ze;
+                rd_write_en <= '1' when branch_cond = '1';
+                pc_load_en  <= '1';
             when "01001" =>         -- AUIPC
-                rd_value    <= std_logic_vector(signed(alu_result)-signed(curr_pc_ze));
+                rd_value    <= std_logic_vector(signed(alu_result)+signed(next_pc_ze));
                 pc_out      <= alu_result;
-            when others  =>
-                rd_value        <= (others => 'Z');
-                rd_write_en     <= '0';
+                rd_write_en <= '1';
+                pc_load_en  <= '1';
+            when others  => 
+                rd_value    <= (others => 'Z');
+                rd_write_en <= '0';
+                pc_load_en  <= '1';
+                pc_out      <= next_pc_ze;
         end case;
     end process;
 end Behavioral;

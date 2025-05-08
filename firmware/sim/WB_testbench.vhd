@@ -9,7 +9,6 @@ architecture Behavioral of WB_testbench is
 constant clk_period     : time := 100 ns;
 signal pc_in            : std_logic_vector(11 downto 0) := (others => '0');
 signal next_pc          : std_logic_vector(11 downto 0) := (others => '0');
-signal next_pc_reg      : std_logic_vector(11 downto 0) := (others => '0');
 signal curr_pc          : std_logic_vector(11 downto 0) := (others => '0');
 signal instr            : std_logic_vector(31 downto 0) := (others => '0');
 signal clk              : std_logic := '0';
@@ -30,10 +29,10 @@ signal imm_se           : std_logic_vector(31 downto 0) := (others => '0');
 
 signal funct7           : std_logic_vector(6 downto 0) := (others => '0');
 signal branch_cond      : std_logic := '0';
-signal ls_class         : std_logic_vector(2 downto 0) := (others => '0');
 signal alu_result       : std_logic_vector(31 downto 0) := (others => '0');
 
-signal mem_out          : std_logic_vector(31 downto 0);
+signal mem_out          : std_logic_vector(31 downto 0) := (others => '0');
+signal pc_out           : std_logic_vector(31 downto 0) := (others => '0');
 
 component instr_fetch
     port ( 
@@ -85,15 +84,14 @@ component instr_exec
         op_class        : in std_logic_vector(4 downto 0);
         
         branch_cond     : out std_logic;
-        alu_result      : out std_logic_vector(31 downto 0);
-        ls_class        : out std_logic_vector(2 downto 0));
+        alu_result      : out std_logic_vector(31 downto 0));
 end component;
 
 component data_memory is
     Port ( 
         clk             : in std_logic;
         op_class        : in std_logic_vector(4 downto 0);
-        ls_class        : in std_logic_vector(2 downto 0);
+        funct3          : in std_logic_vector(2 downto 0);
         rs2_value       : in std_logic_vector(31 downto 0);  
         alu_result      : in std_logic_vector(31 downto 0);
                    
@@ -117,7 +115,6 @@ component write_back is
 end component;
 
 begin
-
     if_inst : instr_fetch
         port map (
             clk         => clk,
@@ -158,13 +155,13 @@ begin
             funct7      => funct7,
             op_class    => op_class,
             branch_cond => branch_cond,
-            alu_result  => alu_result,
-            ls_class    => ls_class);
+            alu_result  => alu_result);
+            
     mem : data_memory
         port map(
             clk         => clk,
             op_class    => op_class,
-            ls_class    => ls_class,
+            funct3      => funct3,
             rs2_value   => rs2_value,
             alu_result  => alu_result,
             mem_out     => mem_out); 
@@ -180,9 +177,8 @@ begin
             rs2_value       => rs2_value,
             rd_write_en     => rd_write_en,
             pc_load_en      => pc_load_en,
-            pc_out          => pc_in,
-            rd_value        => rd_value
-        );
+            pc_out          => pc_out,
+            rd_value        => rd_value);
     process
     begin
         clk <= '0';
@@ -190,4 +186,6 @@ begin
         clk <= '1';
         wait for clk_period / 2;
     end process;
+    
+    pc_in   <= pc_out(11 downto 0);
 end Behavioral;

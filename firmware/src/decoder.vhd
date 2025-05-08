@@ -15,14 +15,14 @@ entity decoder is
      );
 end decoder;
 
-architecture Behavioral of decoder is    
+architecture Behavioral of decoder is      
 begin
 process(instr)
 begin
 case instr(6 downto 5) is
     when "00" =>
-        case instr(4 downto 2) is 
-            when "000"  => -- LOAD [I-type]
+        case instr(4 downto 0) is  
+            when "000" & "11"  => -- LOAD [I-type]
                 op_class    <=  "00010";
                 imm_se      <=  std_logic_vector(resize(signed(instr(31 downto 20)), imm_se'length));-- Sign extension
                 a_sel       <=  '1'; -- Select register as first operand 
@@ -30,7 +30,7 @@ case instr(6 downto 5) is
                 funct3      <=  instr(14 downto 12);
                 funct7      <=  (others => 'Z'); 
                 cond_opcode <=  (others => 'Z');   
-            when "100"  => -- OP-IMM [I-type]
+            when "100" & "11"  => -- OP-IMM [I-type]
                 op_class    <=  "00001";
                 imm_se      <=  std_logic_vector(resize(signed(instr(31 downto 20)), imm_se'length));
                 a_sel       <=  '1';
@@ -38,20 +38,27 @@ case instr(6 downto 5) is
                 funct3      <=  instr(14 downto 12);
                 funct7      <=  instr(31 downto 25); -- shifts have funct7
                 cond_opcode <=  (others => 'Z');    
-            when "101"  => -- AUIPC [U-type] can be encoded as a combination jump/operation
+            when "101" & "11"  => -- AUIPC [U-type] can be encoded as a combination jump/operation
                 op_class    <=  "01001";
                 imm_se      <=  instr(31) & instr(30 downto 20) 
                                 & instr(19 downto 12) & (11 downto 0 => '0');
                 a_sel       <=  '0'; -- Select Program counter as first operand 
                 b_sel       <=  '0'; -- Select immediate as second operand
-                funct3      <=  "000"; -- Select add
+                funct3      <=  (others => 'Z'); 
                 funct7      <=  (others => 'Z');  
                 cond_opcode <=  (others => 'Z');                         
             when others =>
+                op_class    <=  (others => 'Z'); 
+                imm_se      <=  (others => 'Z'); 
+                a_sel       <=  '0';
+                b_sel       <=  '0';
+                funct3      <=  (others => 'Z'); 
+                funct7      <=  (others => 'Z'); 
+                cond_opcode <=  (others => 'Z');  
         end case;
     when "01" =>
-        case instr(4 downto 2) is 
-            when "000"  => -- STORE [S-type]
+        case instr(4 downto 0) is 
+            when "000" & "11"  => -- STORE [S-type]
                 op_class    <=  "00100";
                 imm_se      <=  std_logic_vector(resize(signed(instr(31 downto 25) 
                                 & instr(11 downto 7)), imm_se'length));
@@ -60,7 +67,7 @@ case instr(6 downto 5) is
                 funct3      <=  instr(14 downto 12);
                 funct7      <=  (others => 'Z'); 
                 cond_opcode <=  (others => 'Z'); 
-            when "100"  => -- OP [R-type]
+            when "100" & "11"  => -- OP [R-type]
                 op_class    <=  "00001";
                 imm_se      <=  (others => 'Z');
                 a_sel       <=  '1';
@@ -68,7 +75,7 @@ case instr(6 downto 5) is
                 funct3      <=  instr(14 downto 12);
                 funct7      <=  instr(31 downto 25);
                 cond_opcode <=  (others => 'Z'); 
-            when "101"  => -- LUI [U-type] encoded as a combination load/operation
+            when "101" & "11"  => -- LUI [U-type] encoded as a combination load/operation
                 op_class    <=  "00011";
                 imm_se      <=  instr(31) & instr(30 downto 20) 
                                 & instr(19 downto 12) & (11 downto 0 => '0');
@@ -78,19 +85,26 @@ case instr(6 downto 5) is
                 funct7      <=  (others => 'Z'); 
                 cond_opcode <=  (others => 'Z');                       
             when others =>
+                op_class    <=  (others => 'Z'); 
+                imm_se      <=  (others => 'Z'); 
+                a_sel       <=  '0';
+                b_sel       <=  '0';
+                funct3      <=  (others => 'Z'); 
+                funct7      <=  (others => 'Z'); 
+                cond_opcode <=  (others => 'Z');  
         end case;    
     when "11" =>
-        case instr(4 downto 2) is 
-            when "000"  => -- BRANCH [B-type]
+        case instr(4 downto 0) is 
+            when "000" & "11"  => -- BRANCH [B-type]
                 op_class    <=  "10000";
                 imm_se      <=  std_logic_vector(resize(signed(instr(31) & instr(7) & 
                                 instr(30 downto 25) & instr(11 downto 8) & '0'), imm_se'length));
-                a_sel       <=  '1';
-                b_sel       <=  '1';
+                a_sel       <=  '0';
+                b_sel       <=  '0';
                 funct3      <=  (others => 'Z'); 
                 funct7      <=  (others => 'Z'); 
                 cond_opcode <=  instr(14 downto 12); 
-            when "001"  => -- JALR [I-type]
+            when "001" & "11"  => -- JALR [I-type]
                 op_class    <=  "01000";
                 imm_se      <=  std_logic_vector(resize(signed(instr(31 downto 20)), imm_se'length));
                 a_sel       <=  '0';
@@ -98,7 +112,7 @@ case instr(6 downto 5) is
                 funct3      <=  instr(14 downto 12);
                 funct7      <=  (others => 'Z'); 
                 cond_opcode <=  (others => 'Z'); 
-            when "011"  => -- JAL [J-type]
+            when "011" & "11"  => -- JAL [J-type]
                 op_class    <=  "01000";
                 imm_se      <=  std_logic_vector(resize(signed(instr(31) & instr(19 downto 12) 
                                 & instr(20) & instr(30 downto 21) & '0'), imm_se'length));
