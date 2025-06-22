@@ -2,7 +2,7 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
-entity instr_decode is
+entity instr_decode_pipeline is
     Port (
         clk         : in std_logic;
         instr       : in std_logic_vector(31 downto 0);
@@ -22,6 +22,8 @@ entity instr_decode is
         b_sel       : out std_logic;
         cond_opcode : out std_logic_vector(2 downto 0);
         rd_addr_out : out std_logic_vector(4 downto 0);
+        rs1_addr_out: out std_logic_vector(4 downto 0);
+        rs2_addr_out: out std_logic_vector(4 downto 0);
         
         -- Data to be elaborated
         
@@ -29,11 +31,12 @@ entity instr_decode is
         rs2_value   : out std_logic_vector(31 downto 0);
         imm_se      : out std_logic_vector(31 downto 0)
     );
-end instr_decode;
+end instr_decode_pipeline;
 
-architecture Structural of instr_decode is
+architecture Structural of instr_decode_pipeline is
     signal rd_rs1_mux       : std_logic_vector(4 downto 0) := (others => '0');
-    signal we               : std_logic := '0';
+    signal rs1_value_reg    : std_logic_vector(31 downto 0) := (others => '0');
+    signal rs2_value_reg    : std_logic_vector(31 downto 0) := (others => '0');
         
     component register_file is
     port ( 
@@ -45,7 +48,8 @@ architecture Structural of instr_decode is
         we          : in std_logic;
         
         rso         : out std_logic_vector(31 downto 0);
-        prso        : out std_logic_vector(31 downto 0));
+        prso        : out std_logic_vector(31 downto 0)
+    );
     end component;
     
     component decoder is
@@ -63,14 +67,14 @@ begin
     reg : register_file
     port map(
         clk         => clk,
-        da          => instr(19 downto 15),
+        da          => instr(11 downto 7) when op_class = "000110"  else 
+                        instr(19 downto 15),
         pda         => instr(24 downto 20),
         dina        => rd_addr_in,
         din         => rd_value,
         we          => rd_write_en,
-        rso         => rs1_value,
-        prso        => rs2_value);
-    
+        rso         => rs1_value_reg,
+        prso        => rs2_value_reg);
     dec : decoder
     port map(
         instr       => instr,
@@ -83,4 +87,11 @@ begin
         imm_se      => imm_se);
      
     rd_addr_out <= instr(11 downto 7);
+    rs1_addr_out<= instr(19 downto 15);
+    rs2_addr_out<= instr(24 downto 20);
+    
+    rs1_value <= rd_value when (instr(19 downto 15) = rd_addr_in and rd_write_en = '1') 
+                  else rs1_value_reg;
+    rs2_value <= rd_value when (instr(24 downto 20) = rd_addr_in and rd_write_en = '1') 
+                  else rs1_value_reg;
 end Structural;

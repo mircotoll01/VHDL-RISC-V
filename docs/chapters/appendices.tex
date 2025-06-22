@@ -32,16 +32,16 @@
             & - & 010 & SW & addition\\
             \hline
             \multirow{5}{*}{LOAD} & - & 000 & LB & addition\\
-            & - & 001 & LH & additionn\\
+            & - & 001 & LH & addition\\
             & - & 010 & LW & addition\\
-            & - & 100 & LBU & unsigned addition\\
-            & - & 101 & LHU & unsigned addition\\
+            & - & 100 & LBU & addition\\
+            & - & 101 & LHU & addition\\
             \hline
             JALR & - & 000 & JALR & addition\\
             \hline
             JAL & - & - & JAL & addition\\
             \hline
-            LUI & - & - & LUI (pseudo instruction LI) & addition with x0\\
+            LUI & - & - & LUI (pseudo instruction LI) & addition\\
             \hline
             AUIPC & - & - & AUIPC & addition\\
             \hline
@@ -79,6 +79,12 @@
 \end{code}
 \newpage
 
+\subsubsection{Instruction Decode [RV32I]}
+\begin{code}
+\captionof{listing}{Architecure of the Instruction Fetch}
+\label{code:ID_code}  
+\inputminted[fontsize=\footnotesize]{vhdl}{\srcfolder instr_decode.vhd}
+\end{code}
 
 \subsubsection{Decoder}
 \begin{code}
@@ -87,6 +93,12 @@
 \inputminted[fontsize=\footnotesize]{vhdl}{\srcfolder decoder.vhd}
 \end{code}
 
+\subsubsection{Register File}
+\begin{code}
+\captionof{listing}{Simple 32 bits Register File}
+\label{code:reg_file}  
+\inputminted[fontsize=\footnotesize]{vhdl}{\srcfolder register_file.vhd}
+\end{code}
 
 \subsubsection{Testbench}
 \begin{code}
@@ -151,7 +163,7 @@
 \subsection{Unpipelined Datapath Simulation}
 \begin{code}
 \captionof{listing}{Testbench with all components of the RV32I datapath}
-\label{code:DP_test}  
+\label{code:DPP_TB}  
 \inputminted[fontsize=\footnotesize]{vhdl}{\simfolder WB_testbench.vhd}
 \end{code}
 \newpage

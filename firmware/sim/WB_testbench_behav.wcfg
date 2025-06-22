@@ -12,31 +12,22 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0.000 ns"></ZoomStartTime>
-      <ZoomEndTime time="738.001 ns"></ZoomEndTime>
+      <ZoomEndTime time="1,335.001 ns"></ZoomEndTime>
       <Cursor1Time time="1,000.000 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="146"></NameColumnWidth>
-      <ValueColumnWidth column_width="75"></ValueColumnWidth>
+      <NameColumnWidth column_width="133"></NameColumnWidth>
+      <ValueColumnWidth column_width="60"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="20" />
    <wvobject type="logic" fp_name="/WB_testbench/clk">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/WB_testbench/curr_pc_ze">
-      <obj_property name="ElementShortName">curr_pc_ze[31:0]</obj_property>
-      <obj_property name="ObjectShortName">curr_pc_ze[31:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/WB_testbench/next_pc_ze">
-      <obj_property name="ElementShortName">next_pc_ze[31:0]</obj_property>
-      <obj_property name="ObjectShortName">next_pc_ze[31:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-   </wvobject>
    <wvobject type="array" fp_name="/WB_testbench/pc_out">
       <obj_property name="ElementShortName">pc_out[31:0]</obj_property>
       <obj_property name="ObjectShortName">pc_out[31:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/WB_testbench/instr">
       <obj_property name="ElementShortName">instr[31:0]</obj_property>
@@ -47,8 +38,8 @@
       <obj_property name="ObjectShortName">rd_write_en</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/WB_testbench/op_class">
-      <obj_property name="ElementShortName">op_class[4:0]</obj_property>
-      <obj_property name="ObjectShortName">op_class[4:0]</obj_property>
+      <obj_property name="ElementShortName">op_class[5:0]</obj_property>
+      <obj_property name="ObjectShortName">op_class[5:0]</obj_property>
       <obj_property name="Radix">BINARYRADIX</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/WB_testbench/funct3">
@@ -60,6 +51,21 @@
       <obj_property name="ElementShortName">funct7[6:0]</obj_property>
       <obj_property name="ObjectShortName">funct7[6:0]</obj_property>
       <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/WB_testbench/imm_se">
+      <obj_property name="ElementShortName">imm_se[31:0]</obj_property>
+      <obj_property name="ObjectShortName">imm_se[31:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/WB_testbench/id_inst/reg/da">
+      <obj_property name="ElementShortName">da[4:0]</obj_property>
+      <obj_property name="ObjectShortName">da[4:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/WB_testbench/id_inst/reg/pda">
+      <obj_property name="ElementShortName">pda[4:0]</obj_property>
+      <obj_property name="ObjectShortName">pda[4:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject type="logic" fp_name="/WB_testbench/a_sel">
       <obj_property name="ElementShortName">a_sel</obj_property>
@@ -73,17 +79,15 @@
       <obj_property name="ElementShortName">cond_opcode[2:0]</obj_property>
       <obj_property name="ObjectShortName">cond_opcode[2:0]</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/WB_testbench/rs1_value">
+   <wvobject type="array" fp_name="/WB_testbench/id_inst/rs1_value">
       <obj_property name="ElementShortName">rs1_value[31:0]</obj_property>
       <obj_property name="ObjectShortName">rs1_value[31:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/WB_testbench/rs2_value">
+   <wvobject type="array" fp_name="/WB_testbench/id_inst/rs2_value">
       <obj_property name="ElementShortName">rs2_value[31:0]</obj_property>
       <obj_property name="ObjectShortName">rs2_value[31:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/WB_testbench/imm_se">
-      <obj_property name="ElementShortName">imm_se[31:0]</obj_property>
-      <obj_property name="ObjectShortName">imm_se[31:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject type="logic" fp_name="/WB_testbench/branch_cond">
       <obj_property name="ElementShortName">branch_cond</obj_property>
@@ -92,17 +96,21 @@
    <wvobject type="array" fp_name="/WB_testbench/alu_result">
       <obj_property name="ElementShortName">alu_result[31:0]</obj_property>
       <obj_property name="ObjectShortName">alu_result[31:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/WB_testbench/mem_out">
       <obj_property name="ElementShortName">mem_out[31:0]</obj_property>
       <obj_property name="ObjectShortName">mem_out[31:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/WB_testbench/mem/dm/dina">
-      <obj_property name="ElementShortName">dina[31:0]</obj_property>
-      <obj_property name="ObjectShortName">dina[31:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/WB_testbench/rd_value">
       <obj_property name="ElementShortName">rd_value[31:0]</obj_property>
       <obj_property name="ObjectShortName">rd_value[31:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/WB_testbench/id_inst/rd_addr_in">
+      <obj_property name="ElementShortName">rd_addr_in[4:0]</obj_property>
+      <obj_property name="ObjectShortName">rd_addr_in[4:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
 </wave_config>

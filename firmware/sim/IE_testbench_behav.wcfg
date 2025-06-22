@@ -12,14 +12,14 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0.000 ns"></ZoomStartTime>
-      <ZoomEndTime time="1,295.001 ns"></ZoomEndTime>
+      <ZoomEndTime time="1,303.001 ns"></ZoomEndTime>
       <Cursor1Time time="1,000.000 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="146"></NameColumnWidth>
-      <ValueColumnWidth column_width="87"></ValueColumnWidth>
+      <ValueColumnWidth column_width="79"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="12" />
+   <WVObjectSize size="13" />
    <wvobject type="logic" fp_name="/IE_testbench/clk">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
@@ -60,9 +60,14 @@
       <obj_property name="ElementShortName">b_sel</obj_property>
       <obj_property name="ObjectShortName">b_sel</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/IE_testbench/imm_se">
-      <obj_property name="ElementShortName">imm_se[31:0]</obj_property>
-      <obj_property name="ObjectShortName">imm_se[31:0]</obj_property>
+   <wvobject type="array" fp_name="/IE_testbench/ie_inst/alu_mux_b">
+      <obj_property name="ElementShortName">alu_mux_b[31:0]</obj_property>
+      <obj_property name="ObjectShortName">alu_mux_b[31:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/IE_testbench/ie_inst/alu_mux_a">
+      <obj_property name="ElementShortName">alu_mux_a[31:0]</obj_property>
+      <obj_property name="ObjectShortName">alu_mux_a[31:0]</obj_property>
       <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject type="logic" fp_name="/IE_testbench/branch_cond">

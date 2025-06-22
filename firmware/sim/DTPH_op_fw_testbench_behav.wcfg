@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="DTPH_testbench_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="DTPH_testbench" />
+            <top_module name="glbl" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="178.510 ns"></ZoomStartTime>
+      <ZoomEndTime time="923.511 ns"></ZoomEndTime>
+      <Cursor1Time time="1,000.000 ns"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="153"></NameColumnWidth>
+      <ValueColumnWidth column_width="61"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="16" />
+   <wvobject type="logic" fp_name="/DTPH_testbench/datapath_inst/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/DTPH_testbench/datapath_inst/instr_if">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">instr_if[31:0]</obj_property>
+      <obj_property name="ObjectShortName">instr_if[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="label">IF_instruction</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/DTPH_testbench/datapath_inst/id_inst/rs1_value">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">rs1_value[31:0]</obj_property>
+      <obj_property name="ObjectShortName">rs1_value[31:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      <obj_property name="label">ID_rs1</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/DTPH_testbench/datapath_inst/rs1_value_ie">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">rs1_value_ie[31:0]</obj_property>
+      <obj_property name="ObjectShortName">rs1_value_ie[31:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      <obj_property name="label">IE_rs1</obj_property>
+      <obj_property name="CustomSignalColor">#FFD700</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/DTPH_testbench/datapath_inst/ie_inst/rs1_fw">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">rs1_fw[31:0]</obj_property>
+      <obj_property name="ObjectShortName">rs1_fw[31:0]</obj_property>
+      <obj_property name="label">rs1_forwarded</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      <obj_property name="CustomSignalColor">#FFA500</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/DTPH_testbench/datapath_inst/ie_inst/first_operand">
+      <obj_property name="ElementShortName">first_operand[31:0]</obj_property>
+      <obj_property name="ObjectShortName">first_operand[31:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      <obj_property name="CustomSignalColor">#FF0000</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/DTPH_testbench/datapath_inst/rs2_value_ie">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">rs2_value_ie[31:0]</obj_property>
+      <obj_property name="ObjectShortName">rs2_value_ie[31:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      <obj_property name="label">IE_rs2</obj_property>
+      <obj_property name="CustomSignalColor">#FFD700</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/DTPH_testbench/datapath_inst/ie_inst/rs2_fw">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">rs2_fw[31:0]</obj_property>
+      <obj_property name="ObjectShortName">rs2_fw[31:0]</obj_property>
+      <obj_property name="label">rs2_forwarded</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      <obj_property name="CustomSignalColor">#FFA500</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/DTPH_testbench/datapath_inst/ie_inst/second_operand">
+      <obj_property name="ElementShortName">second_operand[31:0]</obj_property>
+      <obj_property name="ObjectShortName">second_operand[31:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      <obj_property name="CustomSignalColor">#FF0000</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/DTPH_testbench/datapath_inst/ie_inst/imm_se">
+      <obj_property name="ElementShortName">imm_se[31:0]</obj_property>
+      <obj_property name="ObjectShortName">imm_se[31:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/DTPH_testbench/datapath_inst/ie_inst/a_sel">
+      <obj_property name="ElementShortName">a_sel</obj_property>
+      <obj_property name="ObjectShortName">a_sel</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/DTPH_testbench/datapath_inst/ie_inst/b_sel">
+      <obj_property name="ElementShortName">b_sel</obj_property>
+      <obj_property name="ObjectShortName">b_sel</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/DTPH_testbench/datapath_inst/alu_result_ie">
+      <obj_property name="ElementShortName">alu_result_ie[31:0]</obj_property>
+      <obj_property name="ObjectShortName">alu_result_ie[31:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/DTPH_testbench/datapath_inst/alu_result_dm">
+      <obj_property name="ElementShortName">alu_result_dm[31:0]</obj_property>
+      <obj_property name="ObjectShortName">alu_result_dm[31:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/DTPH_testbench/datapath_inst/reg_dm_wb/alu_result_wb">
+      <obj_property name="ElementShortName">alu_result_wb[31:0]</obj_property>
+      <obj_property name="ObjectShortName">alu_result_wb[31:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/DTPH_testbench/datapath_inst/mem_out_dm">
+      <obj_property name="ElementShortName">mem_out_dm[31:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_out_dm[31:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+</wave_config>

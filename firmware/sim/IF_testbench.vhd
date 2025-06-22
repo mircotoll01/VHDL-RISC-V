@@ -7,22 +7,20 @@ end IF_testbench;
 
 architecture Behavioral of IF_testbench is
     constant clk_period     : time := 20 ns;
-    signal pc_in            : std_logic_vector(11 downto 0) := (others => '0');
-    signal next_pc          : std_logic_vector(11 downto 0) := (others => '0');
-    signal next_pc_reg      : std_logic_vector(11 downto 0) := (others => '0');
-    signal curr_pc          : std_logic_vector(11 downto 0) := (others => '0');
+    signal pc_in            : std_logic_vector(31 downto 0) := (others => '0');
+    signal pc_load_en       : std_logic := '1';
+    signal next_pc          : std_logic_vector(31 downto 0) := (others => '0');
+    signal curr_pc          : std_logic_vector(31 downto 0) := (others => '0');
     signal instr            : std_logic_vector(31 downto 0) := (others => '0');
     signal clk              : std_logic := '0';
-    signal pc_load_en       : std_logic := '1';
     
     component instr_fetch
         port ( 
             clk         : in std_logic;
             pc_load_en  : in std_logic;
-            pc_in       : in std_logic_vector(11 downto 0);
-            
-            next_pc     : out std_logic_vector(11 downto 0);
-            curr_pc     : out std_logic_vector(11 downto 0);
+            pc_in       : in std_logic_vector(31 downto 0);
+            next_pc     : out std_logic_vector(31 downto 0);
+            curr_pc     : out std_logic_vector(31 downto 0);
             instr       : out std_logic_vector(31 downto 0));
     end component;
 begin

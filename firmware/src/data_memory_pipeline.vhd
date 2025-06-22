@@ -2,7 +2,11 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
-entity data_memory is
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.NUMERIC_STD.ALL;
+
+entity data_memory_pipeline is
     Port ( 
         clk             : in std_logic;
         op_class        : in std_logic_vector(5 downto 0);
@@ -11,9 +15,9 @@ entity data_memory is
         alu_result      : in std_logic_vector(31 downto 0);
                    
         mem_out         : out std_logic_vector(31 downto 0));
-end data_memory;
+end data_memory_pipeline;
 
-architecture Behavioral of data_memory is
+architecture Behavioral of data_memory_pipeline is
     signal mem_out_raw  : std_logic_vector(31 downto 0) := (others => '0');
     signal write_enable : std_logic_vector(3 downto 0)  := (others => '0');
     
@@ -34,14 +38,14 @@ begin
         addra   => alu_result(13 downto 2), 
         douta   => mem_out_raw);
     
-    process(funct3, op_class, rs2_value)
+    process(all)
     begin
         case funct3 & op_class is
             when "000" & "000100" => -- LB
                 write_enable<= "0000";
                 mem_out     <= std_logic_vector(resize(
                                 signed(mem_out_raw(7 downto 0)), mem_out'length));
-            when "000" & "001000" => --SB    
+            when "000" & "001000" => -- SB    
                 write_enable<= "0001";
                 mem_out     <= (others => '0');
             when "001" & "000100" => -- LH
@@ -71,5 +75,6 @@ begin
         end case;
     end process;
 end Behavioral;
+
 
 

@@ -5,16 +5,13 @@
     \label{fig:IE_BD}
 \end{figure}
 
-With the previous information extrapolated from the instruction, there is now the need to elaborate the incoming values stored in their relative registers, by performing the needed operation type.
-The Instruction Execute stage, implemented in the simplest way possible can be described in VHDL with two main blocks:
+With the information previously decoded from the instruction, the execute stage is responsible for performing the required computation based on the instruction type. This involves selecting the correct operation and applying it to the values stored in the source registers. In a VHDL implementation, the execution stage can be designed as the union of two main blocks: 
 \begin{itemize}
-\item \textbf{Comparator}: takes two 32-bit inputs and returns a boolean value indicating whether or not the comparison between the two inputs follow a decided criteria. This block is dedicated to the branch-type instructions, that may end in an instruction jump.
-\item \textbf{Arithmetic-Logic Unit}: performs all other arithmetic and logic operations, while also handling shifts. When coding this block it has to be taken into account that both signed and unsigned operations have to be performed. For this reason the inputs of each multiplexer will be casted as unsigned at first (to match for the immediate values already being unsigned) and then casted correctly afterwards. 
+\item \textbf{Comparator}: This block evaluates a condition between two 32-bit inputs and returns a boolean result based on the comparison criterion defined by the funct3 field. It is specifically used for branch-type instructions, determining whether a jump in the control flow should occur depending on the result of the comparison.
+\item \textbf{Arithmetic-Logic Unit}: This block performs all arithmetic and logical operations, including shift operations. When implementing the ALU, it is important to account for both signed and unsigned computations. To handle this correctly, the inputs to each multiplexer are initially cast as unsigned, ensuring consistency with immediate values, which are inherently unsigned, and then cast appropriately based on the operation being performed.
 \end{itemize}
-Starting from the ALU, being the most complex of the two, the necessary steps to take before the description is to understand what type of operation has to be done for each core instruction. As said earlier, some of them can be recognized for both the presence of \emph{funct3} (bit 14 to 12) and \emph{funct7}, in case of R-type onstructions, or just \emph{funct3}. As specified in the base RV32I manual, the univocal codes for the basic core instructions are listed in table \ref{table:core_instr}, from which it is easy to notice that the actual purpose of \emph{funct7} is to switch between addition and substraction, since they are encoded as "000", or between logic and arithmetic right shift (in the table SRA and SRL). A simple solution could be editing the behavior of the decoder to have it look at the sixth bit of \emph{funct7} and have all subtractions encoded as "010", as it would happen for SLT, and similarly for SRL and SRA. This solution would remove the necessity for \emph{funct7} and shrink the necessary opcode for the ALU to 3 bits. However, that portion of the instruction, seemingly unnecessary for RV32I, comes useful when implementing floating-point instructions and multiplications, hence the most flexible solution, however complex, is to make the decoder return \emph{funct7} and have the ALU taking it into account when switch between operations.
+Starting with the ALU, the most complex of them, the first step before implementing its VHDL description is to clearly identify the specific requirements to fetch for each core instruction. This involves selecting the operation the necessary fields to determine the correct arithmetic or logical function and select the correct operators, whether they are represented by registers (including the PC) or immediates. As said earlier, some of them can be distinguished for both the presence of \emph{funct3} (bit 14 to 12) and \emph{funct7}, when dealing with R-type encoding, or just \emph{funct3}. As specified in the base RV32I manual, the univocal codes for the basic core instructions are listed in table \ref{table:core_instr}. It is noticeable that, uniquely in RV32I architectures, the actual purpose of \emph{funct7} is to switch between addition and substraction, since they are encoded as "000", or between logic and arithmetic right shift (i.e SRA and SRL as shown in the table). A simple solution could be editing the behavior of the decoder to onlytake the sixth bit of \emph{funct7} into account and have all subtractions encoded as "010", as it would happen for SLT, and similarly for SRL and SRA. This solution would remove the necessity for \emph{funct7} and shrink the necessary opcode for the ALU to 3 bits. However, that portion of the instruction, seemingly unnecessary for RV32I, comes useful when implementing floating-point instructions and multiplications, hence the most flexible solution, however complex, is to make the decoder return \emph{funct7} and have the ALU taking it into account when switch between operations.
 With this in mind now the decoder can be edited to return \emph{funct7} when treating opcodes mapped as OP, and some instances of OP-IMM when treating shifts.With this being said, it is decided that the ALU can switch operation by taking into account, in order of importance: the instruction class, \emph{funct3} and, to maintain flexibility for future modifications, \emph{funct7}.
-
-
 If the ALU can be defined as a big case statement as for the decoder, Table \ref{table:core_instr} may help to simplify the code, in fact some observations can be already made:
 \begin{enumerate}
 \item Many instructions expect the ALU to perform an addition, thus if the architecture of the block is written as a case statement, \emph{the addition can be performed if no other case applies}.
@@ -31,34 +28,14 @@ alu_mux_b   <= rs2 when b_sel = '1' else imm_se;
 \end{minted}
 
 \subsection{Simulation}
-With the current initialization files for the IM, only a small amount of instructions are going to be tested, for this reason the new file should contain each existing tipology, possibly testing the ones that use \emph{funct7} while also implementing jumps and branches, possibly with a loop so that the next stages can be easily tested for inconsistencies or error that may stop the code from running.The new initialization could become:
-
-\begin{minted}{text}
-memory_initialization_radix = 16;
-memory_initialization_vector =
-000100b7,   --> lui x1, 0x10
-00408113,   --> addi x2, x1, 4
-002081b3,   --> add x3, x1, x2
-0030a223,   --> sw x3, 4(x1)
-0040a203,   --> lw x4, 4(x1)
-404182b3,   --> sub x5, x3, x4
-0000006f,   --> jal x0, 0 
-fe108ee3;   --> beq x1, x1, -8
-\end{minted}
-
-The testbench, following the step-by-step assembly of the whole datapath proposed in the ID section, can be built using a copy of the earlier code with the IE as an addition (Source Code \ref{code:IE_TB}).\\
-Now when running a behavioral simulation of the testbench it should be expected that: the first instruction is going to be encoded with \emph{op{\_}class} = "00010", while setting \emph{b{\_}sel} and pulling down \emph{a{\_}sel}, leaving \emph{alu{\_}result}=0; The second one should be acting the same, with the difference being that the output from the ALU will be 4 since x1 can not yet be read; The following load, store and jump instruction should be performing an addition, easy to notice from the ALU's output; The subtraction should instead change \emph{funct7} and the last one should have the comparator set its only output:
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[scale=0.35]{IE_sim.png}
+    \includegraphics[scale=0.36]{IE_sim.png}
     \caption{Complete IE simulation}
     \label{fig:IE_sim}
 \end{figure}
 
-from the copy of the coefficient file given above it is possible to observe the behavior of each instruction in order: \\
-On the far left the LUI instruction is resulting in its immediate, that is 16, shifted to the left by 11 bits, returning 65536 as expected. 
-Arithmetic operations without immediate values, the ones which have operand selectors at logic high, leave high impedance signals at \emph{imm{\_}se}.
-Jump instructions are in fact able to modify the PC, in particular, JAL x0 0 is returning the exact same value of it while BEQ x1 x1 -8 is in fact returning 32-8=28 as next PC value.\\
-Lastly load and store are not yet ready to be analyzed in behavior, since there would be the need for the data memory and writeback to be further inspected.
+The testbench, following the step-by-step assembly of the whole datapath proposed in the ID section, can be built using a copy of the earlier code with the IE as an addition (Source Code \ref{code:IE_TB}).\\
+Now when running a behavioral simulation the following events are expected to happen to be sure that the design is working properly: the first instruction is going to be encoded with \emph{op{\_}class} = "000110", while setting \emph{a{\_}sel} and pulling down \emph{b{\_}sel}, leaving \emph{alu{\_}result}=65536, because LUI operation imply that the immediate operand is shifted by 16 bits to the left, thus multiplicating it by $2^{15}$; The second one should sum the previous result with 4 and the folowing addition should return a 0, since the accessed register cannot yet be written; The following load, store and jump instructions should be performing additions, easy to notice from the ALU's output, which in case of SW and LW, should just return the immediate 4 summed to the registers tht are still limited to store just zeroes, while jumps and branches sum the current PC's value to their orresponding immediate value (in Figure \ref{fig:IE_sim}).The subtraction is easily noticed by the fact that it represent the only one that changes \emph{funct7} and the last one should have the comparator set its only output:\\
 
