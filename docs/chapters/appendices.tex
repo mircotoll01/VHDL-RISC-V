@@ -150,7 +150,6 @@
 \label{code:DM_code}  
 \inputminted[fontsize=\footnotesize]{vhdl}{\srcfolder data_memory.vhd}
 \end{code}
-\newpage
 
 
 \subsection{WriteBack [RV32I]}
@@ -169,3 +168,66 @@
 \newpage
 
 \section{Appendix C: Code segments of the finalized datapath}
+
+\subsection{Final Instruction Fetch entity description}
+\begin{code}
+\captionof{listing}{Instruction Fetch implemented for a pipelined architecture}
+\label{code:IF_PPLND}  
+\inputminted[fontsize=\footnotesize]{vhdl}{\srcfolder instr_fetch_pipeline.vhd}
+\end{code}
+
+\subsection{Final Instruction Decode entity description}
+\begin{code}
+\captionof{listing}{Instruction Decode implemented for a pipelined architecture}
+\label{code:ID_PPLND}  
+\inputminted[fontsize=\footnotesize]{vhdl}{\srcfolder instr_decode_pipeline.vhd}
+\end{code}
+
+\subsection{Final Instruction Execute entity description}
+\begin{code}
+\captionof{listing}{Instruction Execute implemented for a pipelined architecture}
+\label{code:IE_PPLND}  
+\inputminted[fontsize=\footnotesize]{vhdl}{\srcfolder instr_exec_pipeline.vhd}
+\end{code}
+
+\subsection{Final Data Memory stage entity description}
+\begin{code}
+\captionof{listing}{Data Memory implemented for a pipelined architecture}
+\label{code:DM_PPLND}  
+\inputminted[fontsize=\footnotesize]{vhdl}{\srcfolder data_memory_pipeline.vhd}
+\end{code}
+
+\subsection{IF/ID register}
+\begin{code}
+\captionof{listing}{IF/ID register}
+\label{code:IF_ID}  
+\inputminted[fontsize=\footnotesize]{vhdl}{\srcfolder IF_ID.vhd}
+\end{code}
+
+\subsection{ID/IE register}
+\begin{code}
+\captionof{listing}{ID/IE register}
+\label{code:ID_IE}  
+\inputminted[fontsize=\footnotesize]{vhdl}{\srcfolder ID_IE.vhd}
+\end{code}
+
+\subsection{IE/DM register}
+\begin{code}
+\captionof{listing}{IE/DM register}
+\label{code:IE_DM}  
+\inputminted[fontsize=\footnotesize]{vhdl}{\srcfolder IE_DM.vhd}
+\end{code}
+
+\subsection{DM/WB register}
+\begin{code}
+\captionof{listing}{DM/WB register}
+\label{code:DM_WB}  
+\inputminted[fontsize=\footnotesize]{vhdl}{\srcfolder DM_WB.vhd}
+\end{code}
+
+\subsection{Pipelined architecture (Structural definition)}
+\begin{code}
+\captionof{listing}{Structural definition of a pipelined datapath}
+\label{code:DTPTH_pipelined}  
+\inputminted[fontsize=\footnotesize]{vhdl}{\srcfolder datapath.vhd}
+\end{code}

@@ -5,6 +5,7 @@ use IEEE.NUMERIC_STD.ALL;
 entity IF_ID is
     Port ( 
         clk         : in std_logic;
+        flush       : in std_logic;
         curr_pc_if  : in std_logic_vector(31 downto 0); 
         next_pc_if  : in std_logic_vector(31 downto 0); 
         instr_if    : in std_logic_vector(31 downto 0); 
@@ -23,9 +24,15 @@ begin
     process(clk)
     begin
         if rising_edge(clk) then
-            curr_pc_reg <= curr_pc_if;
-            next_pc_reg <= next_pc_if;
-            instr_reg   <= instr_if;
+            if flush = '1' then
+                curr_pc_reg <= (others => '0');
+                next_pc_reg <= (others => '0');
+                instr_reg   <= (others => '0');
+            else
+                curr_pc_reg <= curr_pc_if;
+                next_pc_reg <= next_pc_if;
+                instr_reg   <= instr_if;
+            end if;
         end if;
     end process;
     

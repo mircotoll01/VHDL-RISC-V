@@ -5,6 +5,7 @@ use IEEE.NUMERIC_STD.ALL;
 entity ID_IE is
     Port ( 
         clk             : in std_logic;
+        flush           : in std_logic;
         curr_pc_id      : in std_logic_vector(31 downto 0); 
         next_pc_id      : in std_logic_vector(31 downto 0); 
         op_class_id     : in std_logic_vector(5 downto 0); 
@@ -56,20 +57,37 @@ begin
     process(clk)
     begin
         if rising_edge(clk) then
-            curr_pc_reg         <= curr_pc_id;
-            next_pc_reg         <= next_pc_id;
-            op_class_reg        <= op_class_id;
-            funct3_reg          <= funct3_id;
-            funct7_reg          <= funct7_id;
-            a_sel_reg           <= a_sel_id;
-            b_sel_reg           <= b_sel_id;
-            imm_se_reg          <= imm_se_id;
-            rs1_value_reg       <= rs1_value_id;
-            rs2_value_reg       <= rs2_value_id;
-            rd_addr_reg         <= rd_addr_id;
-            rs1_addr_reg        <= rs1_addr_id;
-            rs2_addr_reg        <= rs2_addr_id;
-            cond_opcode_reg     <= cond_opcode_id;
+            if flush = '1' then
+                curr_pc_reg         <= (others => '0');
+                next_pc_reg         <= (others => '0');
+                op_class_reg        <= (others => '0');
+                funct3_reg          <= (others => '0');
+                funct7_reg          <= (others => '0');
+                a_sel_reg           <= '0';
+                b_sel_reg           <= '0';
+                imm_se_reg          <= (others => '0');
+                rs1_value_reg       <= (others => '0');
+                rs2_value_reg       <= (others => '0');
+                rd_addr_reg         <= (others => '0');
+                rs1_addr_reg        <= (others => '0');
+                rs2_addr_reg        <= (others => '0');
+                cond_opcode_reg     <= (others => '0');
+            else
+                curr_pc_reg         <= curr_pc_id;
+                next_pc_reg         <= next_pc_id;
+                op_class_reg        <= op_class_id;
+                funct3_reg          <= funct3_id;
+                funct7_reg          <= funct7_id;
+                a_sel_reg           <= a_sel_id;
+                b_sel_reg           <= b_sel_id;
+                imm_se_reg          <= imm_se_id;
+                rs1_value_reg       <= rs1_value_id;
+                rs2_value_reg       <= rs2_value_id;
+                rd_addr_reg         <= rd_addr_id;
+                rs1_addr_reg        <= rs1_addr_id;
+                rs2_addr_reg        <= rs2_addr_id;
+                cond_opcode_reg     <= cond_opcode_id;
+            end if;
         end if;
     end process;
     

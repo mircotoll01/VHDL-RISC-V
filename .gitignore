@@ -47,4 +47,4 @@ firmware/VHDL-RISC-V/
 .bak 
 .mtc
 build/
-_minted/
+docs/_minted/

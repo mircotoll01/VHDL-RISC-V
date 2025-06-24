@@ -22,8 +22,6 @@ entity instr_exec_pipeline is
         alu_result_dm   : in std_logic_vector(31 downto 0);
         rd_addr_wb      : in std_logic_vector(4 downto 0);      
         alu_result_wb   : in std_logic_vector(31 downto 0);
-        op_class_dm     : in std_logic_vector(5 downto 0);
-        op_class_wb     : in std_logic_vector(5 downto 0);
         
         branch_cond     : out std_logic;
         rs2_value_out   : out std_logic_vector(31 downto 0);
@@ -34,8 +32,9 @@ end instr_exec_pipeline;
 architecture Structural of instr_exec_pipeline is
     signal first_operand    : std_logic_vector(31 downto 0) := (others => '0');
     signal second_operand   : std_logic_vector(31 downto 0) := (others => '0');
-    signal rs1_fw   : std_logic_vector(31 downto 0) := (others => '0');
-    signal rs2_fw   : std_logic_vector(31 downto 0) := (others => '0');
+    signal rs1_fw           : std_logic_vector(31 downto 0) := (others => '0');
+    signal rs2_fw           : std_logic_vector(31 downto 0) := (others => '0');
+    signal branch_cond_buf  : std_logic;
 
     component ALU is
         port (
@@ -56,36 +55,13 @@ architecture Structural of instr_exec_pipeline is
             
             branch_cond     : out std_logic);
     end component;
-    
-    component forwarding_unit is
-        port ( 
-            rs1             : in std_logic_vector(31 downto 0);
-            rs2             : in std_logic_vector(31 downto 0);
-            alu_res_dm      : in std_logic_vector(31 downto 0);
-            alu_res_wb      : in std_logic_vector(31 downto 0);
-            rs1_addr        : in std_logic_vector(4 downto 0);
-            rs2_addr        : in std_logic_vector(4 downto 0);
-            rd_addr_dm      : in std_logic_vector(4 downto 0);
-            rd_addr_wb      : in std_logic_vector(4 downto 0);
-            op_class_ie     : in std_logic_vector(5 downto 0);
-            op_class_dm     : in std_logic_vector(5 downto 0);    
-            op_class_wb     : in std_logic_vector(5 downto 0);
-            a_sel           : in std_logic;
-            b_sel           : in std_logic;
-            imm_se          : in std_logic_vector(31 downto 0);
-            curr_pc         : in std_logic_vector(31 downto 0);
-            
-            rs2_fw          : out std_logic_vector(31 downto 0);
-            first_operand   : out std_logic_vector(31 downto 0);  
-            second_operand  : out std_logic_vector(31 downto 0));
-    end component;
 begin
     comp : comparator 
     port map(
         first_operand   => rs1_value_in,
         second_operand  => rs2_value_in,
         cond_opcode     => cond_opcode,
-        branch_cond     => branch_cond); 
+        branch_cond     => branch_cond_buf); 
     
     alu_1 : ALU
     port map(
@@ -106,4 +82,6 @@ begin
     first_operand   <= rs1_fw when a_sel = '1' else curr_pc;
     second_operand  <= rs2_fw when b_sel = '1' else imm_se;
     rs2_value_out   <= rs2_fw;
+    
+    branch_cond     <= branch_cond_buf when op_class(5) else '0';
 end Structural;

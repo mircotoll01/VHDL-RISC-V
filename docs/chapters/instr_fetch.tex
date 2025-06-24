@@ -4,7 +4,7 @@
   \caption{Basic instruction fetch block diagram}
   \label{fig:IF_BD}
 \end{figure}
-\subsection{Basic decription}
+\subsection{Basic description}
 This stage of the datapath fetches the instruction to be executed, which is stored in the Instruction Memory. This memory can be implemented using Vivado's Block Memory Generator IP, configured as a single-port RAM with a 32-bit read-write width. The memory size should be addressable using at least 12 bits, because the AUIPC instruction must be able to load absolute addresses that are shifted by that amount into the Program Counter (PC).
 The Program Counter is a register that holds the address of the current instruction and, during program execution, the latter is incremented at each rising edge of the clock; Since memory is byte-addressable and each instruction is 4 bytes long, the PC is incremented by 4 at each step. 
 In this project, however, the Instruction Memory is simulated using a RAM with 32-bit words per address; While the architecture should still work with bytes, the increment is going to remain 4, but the two least significant bits of the address shall be unused from now on.

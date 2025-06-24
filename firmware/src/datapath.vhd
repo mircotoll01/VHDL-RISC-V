@@ -19,6 +19,9 @@ signal rd_write_en_wb   : std_logic := '0';
 signal rd_value_wb      : std_logic_vector(31 downto 0) := (others => '0');
 signal rd_addr_in_wb    : std_logic_vector(4 downto 0) := (others => '0');
 
+signal flush_if_id      : std_logic := '0';
+signal pc_stall         : std_logic := '0';
+
 signal rd_addr_id       : std_logic_vector(4 downto 0) := (others => '0');
 signal rs1_addr_id      : std_logic_vector(4 downto 0) := (others => '0');
 signal rs2_addr_id      : std_logic_vector(4 downto 0) := (others => '0');
@@ -77,6 +80,7 @@ component instr_fetch_pipeline
         clk             : in std_logic;
         pc_load_en      : in std_logic;
         pc_in           : in std_logic_vector(31 downto 0);
+        pc_stall        : in std_logic;
         next_pc         : out std_logic_vector(31 downto 0);
         curr_pc         : out std_logic_vector(31 downto 0);
         instr           : out std_logic_vector(31 downto 0));
@@ -85,6 +89,7 @@ end component;
 component IF_ID
     port ( 
         clk             : in std_logic;
+        flush           : in std_logic;
         curr_pc_if      : in std_logic_vector(31 downto 0); 
         next_pc_if      : in std_logic_vector(31 downto 0); 
         instr_if        : in std_logic_vector(31 downto 0);
@@ -118,6 +123,7 @@ end component;
 component ID_IE
     Port ( 
         clk             : in std_logic;
+        flush           : in std_logic;
         curr_pc_id      : in std_logic_vector(31 downto 0); 
         next_pc_id      : in std_logic_vector(31 downto 0); 
         op_class_id     : in std_logic_vector(5 downto 0); 
@@ -167,8 +173,6 @@ component instr_exec_pipeline
         alu_result_dm   : in std_logic_vector(31 downto 0);
         rd_addr_wb      : in std_logic_vector(4 downto 0);      
         alu_result_wb   : in std_logic_vector(31 downto 0);
-        op_class_dm     : in std_logic_vector(5 downto 0);
-        op_class_wb     : in std_logic_vector(5 downto 0);
         branch_cond     : out std_logic;
         rs2_value_out   : out std_logic_vector(31 downto 0);
         alu_result      : out std_logic_vector(31 downto 0));
@@ -177,6 +181,7 @@ end component;
 component IE_DM
     Port ( 
         clk             : in std_logic;
+        flush           : in std_logic;
         curr_pc_ie      : in std_logic_vector(31 downto 0); 
         next_pc_ie      : in std_logic_vector(31 downto 0); 
         op_class_ie     : in std_logic_vector(5 downto 0); 
@@ -242,12 +247,16 @@ begin
             clk             => clk,
             pc_load_en      => pc_load_en_wb,
             pc_in           => pc_out_wb,
+            pc_stall        => (branch_cond_ie or branch_cond_dm or branch_cond_wb)
+                                or (op_class_ie(4) or op_class_dm(4) or op_class_wb(4)),
             next_pc         => next_pc_if,
             curr_pc         => curr_pc_if,
             instr           => instr_if);
     reg_if_id : IF_ID
         port map(
             clk             => clk,
+            flush           => (branch_cond_ie or branch_cond_dm or branch_cond_wb)
+                                or (op_class_ie(4) or op_class_dm(4) or op_class_wb(4)),
             curr_pc_if      => curr_pc_if,
             next_pc_if      => next_pc_if,
             instr_if        => instr_if,
@@ -276,6 +285,8 @@ begin
     reg_id_ie: ID_IE 
         port map(
             clk             => clk,
+            flush           => (branch_cond_dm or branch_cond_wb)
+                                or (op_class_dm(4) or op_class_wb(4)),
             curr_pc_id      => curr_pc_id,
             next_pc_id      => next_pc_id,
             op_class_id     => op_class_id,
@@ -322,14 +333,14 @@ begin
             alu_result_dm   => alu_result_dm,
             rd_addr_wb      => rd_addr_wb,
             alu_result_wb   => alu_result_wb,
-            op_class_dm     => op_class_dm,
-            op_class_wb     => op_class_wb,
             branch_cond     => branch_cond_ie,
             rs2_value_out   => rs2_value_out,
             alu_result      => alu_result_ie);
     reg_ie_dm: IE_DM
         port map(
             clk             => clk,
+            flush           => branch_cond_dm
+                                or op_class_wb(4),
             curr_pc_ie      => curr_pc_ie,
             next_pc_ie      => next_pc_ie,
             op_class_ie     => op_class_ie,

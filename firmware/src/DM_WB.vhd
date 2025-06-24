@@ -5,14 +5,14 @@ use IEEE.NUMERIC_STD.ALL;
 entity DM_WB is
     Port (
         clk             : in std_logic;
-        next_pc_dm   : in std_logic_vector(31 downto 0); 
+        next_pc_dm      : in std_logic_vector(31 downto 0); 
         mem_out_dm      : in std_logic_vector(31 downto 0); 
         alu_result_dm   : in std_logic_vector(31 downto 0); 
         rd_addr_dm      : in std_logic_vector(4 downto 0); 
         branch_cond_dm  : in std_logic;
         op_class_dm     : in std_logic_vector(5 downto 0);
         
-        next_pc_wb   : out std_logic_vector(31 downto 0); 
+        next_pc_wb      : out std_logic_vector(31 downto 0); 
         mem_out_wb      : out std_logic_vector(31 downto 0); 
         alu_result_wb   : out std_logic_vector(31 downto 0); 
         rd_addr_wb      : out std_logic_vector(4 downto 0); 
@@ -22,7 +22,7 @@ entity DM_WB is
 end DM_WB;
 
 architecture Behavioral of DM_WB is
-signal next_pc_reg   : std_logic_vector(31 downto 0) := (others => '0');
+signal next_pc_reg      : std_logic_vector(31 downto 0) := (others => '0');
 signal mem_out_reg      : std_logic_vector(31 downto 0) := (others => '0');
 signal alu_result_reg   : std_logic_vector(31 downto 0) := (others => '0');
 signal rd_addr_reg      : std_logic_vector(4 downto 0) := (others => '0');
@@ -32,7 +32,7 @@ begin
     process(clk)
     begin
         if rising_edge(clk) then
-            next_pc_reg  <= next_pc_dm;
+            next_pc_reg     <= next_pc_dm;
             mem_out_reg     <= mem_out_dm;
             alu_result_reg  <= alu_result_dm;
             rd_addr_reg     <= rd_addr_dm;

@@ -1,8 +1,8 @@
 This document is going to describe a basic RISC-V datapath written in VHDL, starting from a simple non-pipelined architecture just to implement more complex features and instructions with a bottom-up approach.
 When talking about RISC-V it is necessary to distinguish the two faces of the ISA:
 \begin{itemize}
-    \item \emph{Unpriviledged ISA}: that defines the user-level instruction types, which mainly compose a program to be executed.
-    \item \emph{Priviledged ISA}: which defines exception management and operation modes (supervisor, hypervisor and user mode), interrupt handling and multiple other functionalities for operating system support.
+    \item \emph{Unprivileged ISA}: that defines the user-level instruction types, which mainly compose a program to be executed.
+    \item \emph{Privileged ISA}: which defines exception management and operation modes (supervisor, hypervisor and user mode), interrupt handling and multiple other functionalities for operating system support.
 \end{itemize}
 The project will focus on partially implementing the base user-level instructions, defined in the unpriviledged ISA, defining at each stage of the execution what information in an instruction are used and how they affect the state of the sequential network, helping the explanation with behavioral simulations, and building the project in a way that can be later expanded with other features.
 Thus, the first stage of this project will focus on implementing a datapath that executes some commands included in the User Instruction Set, in particular, for the first part of the project, the 32-bit Base Integer Instruction Set (RV32I).

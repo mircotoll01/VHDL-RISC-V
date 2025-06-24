@@ -2,13 +2,12 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
--- TODO: fix PC to have it at 32 bits
-
 entity instr_fetch_pipeline is
     port ( 
         clk         : in std_logic;
         pc_load_en  : in std_logic;
         pc_in       : in std_logic_vector(31 downto 0);
+        pc_stall    : in std_logic;
         
         next_pc     : out std_logic_vector(31 downto 0);
         curr_pc     : out std_logic_vector(31 downto 0);
@@ -38,7 +37,9 @@ begin
     process (clk)
     begin
         if rising_edge(clk) then
-            if pc_load_en = '1' then
+            if pc_stall = '1' then
+                pc_reg  <= pc_reg;
+            elsif pc_load_en = '1' then
                 pc_reg  <= unsigned(pc_in);
             else
                 pc_reg <= pc_reg + 4;
