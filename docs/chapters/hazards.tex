@@ -88,13 +88,13 @@ The second crucial modification that has to be introduced is a way to have all t
     \begin{center}
         \begin{tabular}{|c|c|}
             \hline
-            IF/ID &  branch{\_}cond{\_}(any stage) = 1 OR op{\_}class{\_}(any stage) = "010000"   \\
+            IF/ID &  branch{\_}cond{\_}(ie,dm) = 1 OR op{\_}class{\_}(ie,dm) = "010000"   \\
             
             ID/IE &  branch{\_}cond{\_}(ie,dm,wb) = 1 OR op{\_}class{\_}(ie,dm,wb) = "010000"   \\
             
-            IE/DM & branch{\_}cond{\_}(dm,wb) = 1 OR op{\_}class{\_}(dm,wb)= "010000"\\
+            IE/DM & branch{\_}cond{\_}(dm,wb) = 1 OR op{\_}class{\_}(dm,wb) = "010000"\\
             
-            DM/WB & branch{\_}cond{\_}(wb) = 1 OR op{\_}class{\_}(wb)= "010000"\\
+            DM/WB & branch{\_}cond{\_}(wb) = 1 OR op{\_}class{\_}(wb) = "010000"\\
             
             \hline
         \end{tabular}
@@ -103,7 +103,8 @@ The second crucial modification that has to be introduced is a way to have all t
     \end{center}
 \end{table}
 \newpage
-An observation that needs to be made before implementing the logic is that aas of now, branch{\_}cond can be high even if there is no branch instruction being executed, for that reason, an additional modification has to be made to the original code of the IE stage:
+One thing to notice is that the IF/ID stage is not being flushed when a jump instruction reaches WB, this is because at the rising edge of the clock, after the jump reaches the writeback, the PC value is updated and so does the inputs at the register. Having IF/ID flushed in that moment would mean that the PC is going to be updated to the value at the output of DM/WB, which was previously flushed and would return a 0 as next address.
+Another observation that needs to be made before implementing the logic is that aas of now, branch{\_}cond can be high even if there is no branch instruction being executed, for that reason, an additional modification has to be made to the original code of the IE stage:
 
 \begin{minted}[fontsize=\footnotesize]{vhdl}
 architecture Structural of instr_exec_pipeline is
@@ -133,7 +134,42 @@ begin
     -- forwarding logic and ALU instantiation
     
     branch_cond     <= branch_cond_buf when op_class(5) else '0';
+end Structural;
 \end{minted}
 
 Source Code \ref{code:IF_ID} shows in the IF/ID register the implementation of a flush input, while Source Code \ref{code:DTPTH_pipelined} shows the statements that drive that input in each register.
 
+\subsection{Simulation}
+With all the basic features needed for the architecture to work properly, there is the need to test if jumps can work properly, therefore a new \emph{.coe} file can be loaded to the IM:
+
+\begin{minted}[fontsize=\footnotesize]{text}
+    memory_initialization_radix=16;
+    memory_initialization_vector=
+
+    000100b7,   --> lui x1, 16
+    00408113,   --> addi x2, x1, 4
+    002081b3,   --> add x3, x1, x2
+    0030a223,   --> sw x3, 4(x1)
+    00309423,   --> sh x3, 8(x1)
+    00308623,   --> sb x3, 12(x1)
+    0040a283,   --> lw x5, 4(x1)
+    00409303,   --> lh x6, 4(x1) 
+    00408383,   --> lb x7, 4(x1)
+    404282b3,   --> sub x5, x5, x4
+    00100113,   --> addi x2, x0, 1
+    00209293,   --> slli x5, x1, 2
+    0020d293,   --> srli x5, x1, 2
+    0030a033,   --> slt x0, x1, x3
+    00302113,   --> slti x2, x0, 3
+    fe108ce3,   --> beq x1, x1, -8      
+    0000006f;   --> jal x0, 0           
+\end{minted}
+
+By executing this program a loop should be expected to initiate just before the jump, having the program go back. 
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[scale = 0.33]{loop_sim.png}
+    \caption{CPU stalling any increment of the PC until the branch is fully executed}
+    \label{fig:loop_sim}
+\end{figure}

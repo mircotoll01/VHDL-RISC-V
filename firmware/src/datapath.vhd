@@ -4,7 +4,13 @@ use IEEE.NUMERIC_STD.ALL;
 
 entity datapath is
     port(
-        clk     : in std_logic
+        clk         : in std_logic;
+        sw_i        : in std_logic_vector(15 downto 0);
+        btnc_i      : in std_logic;
+        disp_seg_o  : out std_logic_vector(7 downto 0);
+        disp_an_o   : out std_logic_vector(7 downto 0);
+        rgb2_green_o: out std_logic;
+        rgb2_red_o  : out std_logic
     );
 end datapath;
 
@@ -74,6 +80,10 @@ signal op_class_wb      : std_logic_vector(5 downto 0) := (others => '0');
 signal pc_out_wb        : std_logic_vector(31 downto 0) := (others => '0');
 signal pc_load_en_wb    : std_logic := '0';
 
+signal data_read_dm_sig : std_logic_vector(31 downto 0) := (others => '0');
+signal data_read_reg_sig: std_logic_vector(31 downto 0) := (others => '0');
+signal addr_sel_sig     : std_logic_vector(13 downto 0) := (others => '0');
+
 
 component instr_fetch_pipeline
     port ( 
@@ -117,7 +127,9 @@ component instr_decode_pipeline
         rs2_addr_out    : out std_logic_vector(4 downto 0);
         rs1_value       : out std_logic_vector(31 downto 0);
         rs2_value       : out std_logic_vector(31 downto 0);
-        imm_se          : out std_logic_vector(31 downto 0));
+        imm_se          : out std_logic_vector(31 downto 0);
+        addr_sel        : in std_logic_vector(13 downto 0);
+        reg_out         : out std_logic_vector(31 downto 0));
 end component;
     
 component ID_IE
@@ -207,7 +219,8 @@ component data_memory_pipeline is
         funct3          : in std_logic_vector(2 downto 0);
         rs2_value       : in std_logic_vector(31 downto 0);  
         alu_result      : in std_logic_vector(31 downto 0);
-                   
+        read_addr       : in std_logic_vector(13 downto 0);      
+        read_data_out   : out std_logic_vector(31 downto 0);
         mem_out         : out std_logic_vector(31 downto 0));
 end component;
 
@@ -241,22 +254,39 @@ component write_back_pipeline is
         rd_value        : out std_logic_vector(31 downto 0));
 end component;
 
+component memory_reader is
+    port ( 
+        clk             : in std_logic;
+        data_in_dm      : in std_logic_vector(31 downto 0);
+        data_in_reg     : in std_logic_vector(31 downto 0);
+        sw_i            : in std_logic_vector(15 downto 0);
+        sw_reg_mem      : in std_logic;
+        
+        disp_seg        : out std_logic_vector(7 downto 0);
+        an              : out std_logic_vector(7 downto 0);
+        led_green       : out std_logic;
+        led_red         : out std_logic;
+        addr_sel        : out std_logic_vector(13 downto 0)   
+    );
+end component;
+
+
 begin
     if_inst : instr_fetch_pipeline
         port map (
             clk             => clk,
             pc_load_en      => pc_load_en_wb,
             pc_in           => pc_out_wb,
-            pc_stall        => (branch_cond_ie or branch_cond_dm or branch_cond_wb)
-                                or (op_class_ie(4) or op_class_dm(4) or op_class_wb(4)),
+            pc_stall        => (branch_cond_ie or branch_cond_dm)
+                                or (op_class_ie(4) or op_class_dm(4)),
             next_pc         => next_pc_if,
             curr_pc         => curr_pc_if,
             instr           => instr_if);
     reg_if_id : IF_ID
         port map(
             clk             => clk,
-            flush           => (branch_cond_ie or branch_cond_dm or branch_cond_wb)
-                                or (op_class_ie(4) or op_class_dm(4) or op_class_wb(4)),
+            flush           => (branch_cond_ie or branch_cond_dm)
+                                or (op_class_ie(4) or op_class_dm(4)),
             curr_pc_if      => curr_pc_if,
             next_pc_if      => next_pc_if,
             instr_if        => instr_if,
@@ -281,12 +311,14 @@ begin
             rs2_addr_out    => rs2_addr_id,
             rs1_value       => rs1_value_id,
             rs2_value       => rs2_value_id,
-            imm_se          => imm_se_id);
+            imm_se          => imm_se_id,
+            addr_sel        => addr_sel_sig,
+            reg_out         => data_read_reg_sig);
     reg_id_ie: ID_IE 
         port map(
             clk             => clk,
-            flush           => (branch_cond_dm or branch_cond_wb)
-                                or (op_class_dm(4) or op_class_wb(4)),
+            flush           => (branch_cond_ie or branch_cond_dm or branch_cond_wb)
+                                or (op_class_ie(4) or op_class_dm(4) or op_class_wb(4)),
             curr_pc_id      => curr_pc_id,
             next_pc_id      => next_pc_id,
             op_class_id     => op_class_id,
@@ -339,8 +371,8 @@ begin
     reg_ie_dm: IE_DM
         port map(
             clk             => clk,
-            flush           => branch_cond_dm
-                                or op_class_wb(4),
+            flush           => branch_cond_dm or branch_cond_wb or
+                                op_class_dm(4) or op_class_wb(4),
             curr_pc_ie      => curr_pc_ie,
             next_pc_ie      => next_pc_ie,
             op_class_ie     => op_class_ie,
@@ -364,6 +396,8 @@ begin
             funct3          => funct3_dm,
             rs2_value       => rs2_value_dm,
             alu_result      => alu_result_dm,
+            read_addr       => addr_sel_sig,
+            read_data_out   => data_read_dm_sig, 
             mem_out         => mem_out_dm); 
     reg_dm_wb: DM_WB
         port map(
@@ -391,4 +425,18 @@ begin
             pc_load_en      => pc_load_en_wb,
             pc_out          => pc_out_wb,
             rd_value        => rd_value_wb);
-end Structural;
+     mem_read : memory_reader
+        port map(
+            clk             => clk,
+            data_in_dm      => data_read_dm_sig,
+            data_in_reg     => data_read_reg_sig,
+            sw_i            => sw_i,
+            sw_reg_mem      => btnc_i,
+            disp_seg        => disp_seg_o,
+            
+            an              => disp_an_o,
+            led_green       => rgb2_green_o,
+            led_red         => rgb2_red_o,
+            addr_sel        => addr_sel_sig
+            );
+end Structural; 

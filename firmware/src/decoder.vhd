@@ -115,7 +115,7 @@ case instr(6 downto 5) is
             when "011" & "11"  => -- JAL [J-type]
                 op_class    <=  "010000";
                 imm_se      <=  std_logic_vector(resize(signed(instr(31) & instr(19 downto 12) 
-                                & instr(20) & instr(30 downto 21) & '0'), imm_se'length));
+                                & instr(20) & instr(30 downto 21) & "0"), imm_se'length));
                 a_sel       <=  '0';
                 b_sel       <=  '0'; 
                 funct3      <=  (others => '0'); 

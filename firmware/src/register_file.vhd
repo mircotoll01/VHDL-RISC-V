@@ -12,7 +12,12 @@ entity register_file is
         we          : in std_logic;
         
         rso         : out std_logic_vector(31 downto 0);
-        prso        : out std_logic_vector(31 downto 0)
+        prso        : out std_logic_vector(31 downto 0);
+        
+        -- checking out registers from ooutside
+        
+        addr_sel    : in std_logic_vector(13 downto 0);
+        reg_out     : out std_logic_vector(31 downto 0)
     );
 end register_file;
 
@@ -35,4 +40,7 @@ begin
     
     rso     <= registers(to_integer(unsigned(da)));
     prso    <= registers(to_integer(unsigned(pda)));
+    
+    -- checking registers from data reader
+    reg_out <= registers(to_integer(unsigned(addr_sel(4 downto 0))));
 end Behavioral;

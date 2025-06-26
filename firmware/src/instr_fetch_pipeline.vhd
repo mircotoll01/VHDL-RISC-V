@@ -38,9 +38,9 @@ begin
     begin
         if rising_edge(clk) then
             if pc_stall = '1' then
-                pc_reg  <= pc_reg;
+                pc_reg <= pc_reg;
             elsif pc_load_en = '1' then
-                pc_reg  <= unsigned(pc_in);
+                pc_reg <= unsigned(pc_in);
             else
                 pc_reg <= pc_reg + 4;
             end if;

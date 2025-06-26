@@ -13,7 +13,10 @@ entity data_memory_pipeline is
         funct3          : in std_logic_vector(2 downto 0);
         rs2_value       : in std_logic_vector(31 downto 0);  
         alu_result      : in std_logic_vector(31 downto 0);
+        
+        read_addr       : in std_logic_vector(13 downto 0);
                    
+        read_data_out   : out std_logic_vector(31 downto 0);
         mem_out         : out std_logic_vector(31 downto 0));
 end data_memory_pipeline;
 
@@ -27,7 +30,13 @@ architecture Behavioral of data_memory_pipeline is
             wea         : in std_logic_vector(3 downto 0);
             dina        : in std_logic_vector(31 downto 0);
             addra       : in std_logic_vector(11 downto 0);
-            douta       : out std_logic_vector(31 downto 0));
+            douta       : out std_logic_vector(31 downto 0);
+            
+            clkb        : in std_logic;
+            web         : in std_logic_vector(3 downto 0);
+            dinb        : in std_logic_vector(31 downto 0);
+            addrb       : in std_logic_vector(11 downto 0);
+            doutb       : out std_logic_vector(31 downto 0));
     end component;
 begin
     dm : data_mem
@@ -36,7 +45,14 @@ begin
         wea     => write_enable, -- enable write only if it's a store instruction
         dina    => rs2_value,
         addra   => alu_result(13 downto 2), 
-        douta   => mem_out_raw);
+        douta   => mem_out_raw,
+        
+        clkb    => clk,
+        web     => (others => '0'), 
+        dinb    => (others => '0'),
+        addrb   => read_addr(13 downto 2), 
+        doutb   => read_data_out
+        );
     
     process(all)
     begin

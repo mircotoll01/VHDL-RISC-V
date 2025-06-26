@@ -29,7 +29,11 @@ entity instr_decode_pipeline is
         
         rs1_value   : out std_logic_vector(31 downto 0);
         rs2_value   : out std_logic_vector(31 downto 0);
-        imm_se      : out std_logic_vector(31 downto 0)
+        imm_se      : out std_logic_vector(31 downto 0);
+        
+        -- connections to memory reader
+        addr_sel    : in std_logic_vector(13 downto 0);
+        reg_out     : out std_logic_vector(31 downto 0)
     );
 end instr_decode_pipeline;
 
@@ -48,7 +52,10 @@ architecture Structural of instr_decode_pipeline is
         we          : in std_logic;
         
         rso         : out std_logic_vector(31 downto 0);
-        prso        : out std_logic_vector(31 downto 0)
+        prso        : out std_logic_vector(31 downto 0);
+        
+        addr_sel    : in std_logic_vector(13 downto 0);
+        reg_out     : out std_logic_vector(31 downto 0)
     );
     end component;
     
@@ -74,7 +81,10 @@ begin
         din         => rd_value,
         we          => rd_write_en,
         rso         => rs1_value_reg,
-        prso        => rs2_value_reg);
+        prso        => rs2_value_reg,
+        addr_sel    => addr_sel,
+        reg_out     => reg_out
+        );
     dec : decoder
     port map(
         instr       => instr,
