@@ -25,3 +25,4 @@ VHDL-RISC-V/
 |   |   ├── ...
 ├── .gitignore      ← Ignore build artifacts, temporary files
 └── README.md       ← (this file)
+```
