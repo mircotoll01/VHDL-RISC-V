@@ -139,7 +139,7 @@ end Structural;
 
 Source Code \ref{code:IF_ID} shows in the IF/ID register the implementation of a flush input, while Source Code \ref{code:DTPTH_pipelined} shows the statements that drive that input in each register.
 
-\subsection{Simulation}
+\subsection{Simulation and Testing}
 With all the basic features needed for the architecture to work properly, there is the need to test if jumps can work properly, therefore a new \emph{.coe} file can be loaded to the IM:
 
 \begin{minted}[fontsize=\footnotesize]{text}
@@ -173,3 +173,58 @@ By executing this program a loop should be expected to initiate just before the 
     \caption{CPU stalling any increment of the PC until the branch is fully executed}
     \label{fig:loop_sim}
 \end{figure}
+
+With everything simulated, the architecture can now be tested. The chosen board for this project is a Nexys4 DDR, by setting up the constraint file, the simplest way to check the content of the memory to show the correct execution of the program would be using the included switches to select the register and the 7-segment displays to show its content.
+Source Code \ref{code:mem_read} shows a simple driver for the displays with a function that converts a four bits vector to a hexadecimal value, so that the content of each address in memory or register can be fully shown on 8 ciphers.
+The block itself though needs access to DM and register file, thus some modifications need to be made; For the first one, an easy way is to re-declare the DM as a dual-port RAM and access the data from port B; As for the Register File, just one additional line can be added to the original code:
+
+
+\begin{minted}[fontsize=\footnotesize]{vhdl}
+entity register_file is
+    Port ( 
+        
+        -- signals that connect to the ID stage
+        
+        addr_sel    : in std_logic_vector(13 downto 0);
+        reg_out     : out std_logic_vector(31 downto 0)
+    );
+end register_file;
+
+architecture Behavioral of register_file is
+    -- ...
+begin
+    -- clock sensitive process definition for register file
+    
+    rso     <= registers(to_integer(unsigned(da)));
+    prso    <= registers(to_integer(unsigned(pda)));
+    
+    -- checking registers from data reader
+    reg_out <= registers(to_integer(unsigned(addr_sel(4 downto 0))));
+end Behavioral;
+\end{minted}
+
+The final test requires to check if data corresponds to the table below:
+
+\begin{table}[!ht]
+    \begin{center}
+        \begin{tabular}{|c|c|c|}
+            \hline
+            \textbf{Location} & \textbf{Address} & \textbf{Value}\\
+            \hline
+            \multirow{3}{*}{DM} & 4 & $131076_{10} = 20004_{16} $ \\
+            & 8 & $0004_{16} $ \\
+            & 12 & $04_{16} $ \\
+            \hline
+            \multirow{7}{*}{RF} & x1 & $65536_{10} = 10000_{16}$\\
+            & x2 & $FFFFFFFF_{16}$\\
+            & x3 & $131076_{10} = 20004_{16} $\\
+            & x4 & 0 (should never be written)\\
+            & x5 & $16384_{10} = 4000_{16} $\\
+            & x6 & $0004_{16} $\\
+            & x7 & $04_{16} $\\
+            \hline
+        \end{tabular}
+    \caption{Final test for the implementation on Nexys 4 DDR}
+    \label{table:test}
+    \end{center}
+\end{table}

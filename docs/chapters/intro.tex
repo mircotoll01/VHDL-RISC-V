@@ -15,6 +15,11 @@ The report will be divided into chapters for each of the following 5 stages of t
 \item \textbf{Writeback} 
 \end{itemize}
 The completion of the first rudimental architecture, able to execute one instruction per clock cycle, has to be then optimized by introducting registers between each block, and thus achieving a \emph{pipelined architecture}, adding more complexity overall yet incrementing the performance of the circuit.\\
-Once again, adding feature with a good base to start from should be easy, and the project could take another step further; One good feature is adding the capability for the processor to execute multiplications and divisions between integers, easy enough since VHDL introduces the synthetizable operators '*' and '/'.\\
-One thing that won't be easy, though, is implementing floating-point operations, since it would require the introduction to a data type that follow the IEEE 754 standard for floating point numbers. The only way to avoid the problem would be having them encoded in VHDL using the data type \textbf{real}, which is not synthetizable, although it would make a good option for HDL designs that won't go further from simulation.\\
-With this being said, the project will follow said procedure, while making available the code in Appendix A.
+This addition although does not come without problems, a pipelined architecture introduces some inconsistencies that need to be addressed in order to have the architecture to remain fully-functional. In particular:
+\begin{itemize}
+    \item \textbf{Data Hazards}: Subsequent instructions that access the same registers, for both reading and writing, in different stages of the pipeline, need to have the most recent data available without having to wait for each previous instruction to complete its cycle of execution.
+    \item \textbf{Control Hazards}: Pipelined architectures need to carefully manage jumps and, if needed, stop every other partial execution of any instruction that comes next, since there is no certainty that the flow of the program will continue in the same way as before the jump.
+\end{itemize}
+With everything fixed, the five stages can finally operate concurrently and thus actually benefitting from having a pipeline.\\
+At the very end, having a synthetizable code does not mean that the code will follow the behavioral simulation, so the code will be implemented on a Nexys 4 DDR with an additional expansion for the core to interact with the 7-segments display and switches to actually see the content of the Data Memory and Register File, just to confirm that everything i working properly.\\
+With this being said, the project will follow said procedure, while making available the code in Appendix B for the unpipelined datapath, Appendix C for the pipelined one, and Appendix D for the extra blocks for testing purposes.

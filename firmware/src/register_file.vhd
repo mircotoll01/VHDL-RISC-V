@@ -14,7 +14,7 @@ entity register_file is
         rso         : out std_logic_vector(31 downto 0);
         prso        : out std_logic_vector(31 downto 0);
         
-        -- checking out registers from ooutside
+        -- checking out registers from outside
         
         addr_sel    : in std_logic_vector(13 downto 0);
         reg_out     : out std_logic_vector(31 downto 0)
