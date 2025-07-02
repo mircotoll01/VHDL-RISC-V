@@ -31,7 +31,6 @@ firmware/VHDL-RISC-V/
 *.nlo
 *.nls
 *.out
-*.pdf
 *.pyg
 *.run.xml
 *.snm
